@@ -7,16 +7,19 @@
 <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
-    const root = document.getElementById("root")
-    const Title = () => (<h3 id="title" onMouseEnter={() => console.log("mouse enter")}>Hello, I'm a title</h3>);
-    const Button = () => (<button style={{ backgroundColor: "tomato",}} onClick={() => console.log("im clicked")}>click me</button>);
-    const Container  = () => (
-        <div>
-            <Title />
-            <Button />
-        </div>
-    );
-    ReactDOM.render(<Container />, root); 
+    const root = document.getElementById("root");
+    const App = () => {
+        const [counter, setCounter] = React.useState(0);
+        const onClick = () => {
+            setCounter(counter + 1)
+        };
+        return (
+            <div>
+                <h3>Total clicks: {counter}</h3>
+                <button onClick={onClick}>click me</button>
+            </div>);
+    };
+    ReactDOM.render(<App />, root);
 </script>
 
 </html>
