@@ -8,25 +8,31 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
     const root = document.getElementById("root");
-    function Btn({text, big}){
-        return <button style={{
-            backgroundColor:"tomato",
-            color: "white",
-            padding: "10px 20px",
-            border: 0,
-            borderRadius: 10,
-            fontSize: big ? 18 : 10,
-        }}
-        >
-            {text}
-        </button>;
+    function Btn({text, onClick}){
+        console.log(text, "rendered");
+        return (
+            <button 
+                onClick = {onClick}  // 이벤트 리스너 설정
+                style={{
+                backgroundColor:"tomato",
+                color: "white",
+                padding: "10px 20px",
+                border: 0,
+                borderRadius: 10,
+                }}
+            >
+                {text}
+            </button>
+        );
     }
+    const MemorizedBtn = React.memo(Btn);  // React Memo
     const App = () => {
-
-        return ( // Btn 안의 구문인 text말고도 이름을 자유롭게 설정해도 됨
+        const [value, setValue] = React.useState("Save Changes");
+        const changeValue = () => setValue("Revert Change");
+        return ( // Btn 안의 text를 apple, banana등 이름을 자유롭게 설정해도 됨
             <div>
-                <Btn text="Save Changes" big={true}/>
-                <Btn text="Continue" big={false}/>
+                <MemorizedBtn text={value} onClick={changeValue}/>
+                <MemorizedBtn text="Continue" />
             </div>
         );
     };
