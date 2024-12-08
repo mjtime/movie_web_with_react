@@ -8,77 +8,25 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
     const root = document.getElementById("root");
-    const MinutesToHours = () => { // 시간 변환기
-        const [amount, setAmount] = React.useState();
-        const [inverted, setInverted] = React.useState(false);
-        const onChange = (event) => {
-            setAmount(event.target.value);
-        }
-        const reset = () => setAmount(0);
-        const onInvert = () => {
-            reset();
-            setInverted((current) => !current);
-        };
-
-        return (
-            <div>
-                <div>
-                    <label htmlFor="minutes">minutes </label>
-                    <input value={inverted ? amount * 60 : amount} id="minutes" placeholder="minutes" type="number" onChange={onChange} disabled={inverted}/>
-                </div>
-                <div>
-                    <label htmlFor="hours">Hours </label>
-                    <input value={inverted ? amount : Math.round(amount/60)} id="hours" placeholder="Hours" type="number" onChange={onChange} disabled={!inverted}/>
-                </div>
-                <button onClick = {reset} >Reset</button>
-                <button onClick = {onInvert} >{inverted ? "Turn back":"Invert"}</button>
-            </div>
-        );
-    };
-    function KmToMiles() {  // 거리 변환기 (function 형태 공부를 위해 arrow로 표현x)
-        const [distance, setDistance] = React.useState();
-        const [inverted, setInverted] = React.useState(false);
-        const onChange = (event)=>{
-            setDistance(event.target.value);
-        }
-        const reset = () =>{
-            setDistance(0);
-        }
-        const onInvert = () => {
-            reset();
-            setInverted((current) => !current);
-        }
-        return(
-            <div>
-                <div>
-                    <label htmlFor="km">Km </label>
-                    <input value={inverted ? distance * 1.6 : distance} id="km" placeholder="Km" type="number" onChange={onChange} disabled={inverted}/>
-                </div>
-                <div>
-                    <label htmlFor="miles">Miles </label>
-                    <input value={inverted ? distance : distance*0.62} id="miles" placeholder="Miles" type="number" onChange={onChange} disabled={!inverted}/>
-                </div>
-                <button onClick = {reset} >Reset</button>
-                <button onClick = {onInvert} >{inverted ? "Turn back":"Invert"}</button>
-            </div>
-        )
+    function Btn({text, big}){
+        return <button style={{
+            backgroundColor:"tomato",
+            color: "white",
+            padding: "10px 20px",
+            border: 0,
+            borderRadius: 10,
+            fontSize: big ? 18 : 10,
+        }}
+        >
+            {text}
+        </button>;
     }
-    const App = () => {  // root div
-        const [index, setIndex] = React.useState("0");
-        const onSelect = (event) =>{
-            setIndex(event.target.value);
-        }
-        
-        return (// select value에 따라 컴포넌트 렌더링
+    const App = () => {
+
+        return ( // Btn 안의 구문인 text말고도 이름을 자유롭게 설정해도 됨
             <div>
-                <h1>Super Converter</h1>
-                <select value={index} onChange={onSelect}>
-                    <option value="0">Minutes & Hours</option>
-                    <option value="1">Km & Miles</option>
-                </select>
-                <hr />
-                {index === "0" ? <MinutesToHours /> : null}
-                {index === "1" ? <KmToMiles /> : null}
+                <Btn text="Save Changes" big={true}/>
+                <Btn text="Continue" big={false}/>
             </div>
         );
     };
