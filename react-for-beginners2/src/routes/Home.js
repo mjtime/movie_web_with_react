@@ -44,18 +44,31 @@ function Home() {
 
     // 장르 필터 추가
     const genre = searchParams.get("genre");
-    console.log(genre);
     if (genre && genre !== "All") {
       url.searchParams.set("genre", genre);
     }
+
+    // 영화 제목 필터 추가
+    const query = searchParams.get("query_term");
+    if (query) {
+      url.searchParams.set("query_term", query);
+    }
+
+    console.log(url.toString()); // url 확인용
 
     // API 요청
     const response = await fetch(url.toString());
     const json = await response.json();
 
-    setMovies(json.data.movies);
-    setLoading(false);
-    console.log(movies);
+    // 데이터 검증
+    if (json.data.movies) {
+      setMovies(json.data.movies);
+    } else {
+      setMovies([]); // 데이터가 없다면 빈 배열로 설정
+    }
+
+    setLoading(false); // 로딩 완료
+    // console.log(movies);  // 영화들 정보 확인용
   };
 
   useEffect(() => {
@@ -67,21 +80,34 @@ function Home() {
     setSearchParams((prevParams) => {
       const newParams = new URLSearchParams(prevParams);
       if (genre === "All") {
-        newParams.delete("genre"); // 장르 전체 선택시 장르 필터 제거
+        newParams.delete("genre"); // 장르 All 선택시 장르 필터 제거
       } else {
-        newParams.set("genre", genre); // 정렬기준이 될 장르로 설정
+        newParams.set("genre", genre); // 정렬 기준이 될 장르로 설정
       }
       return newParams;
     });
   };
 
-  // console.log(searchParams); // url 쿼리 확인용
+  // SearchParams에 검색창 입력시 변경사항 적용
+  const handleSearch = (query) => {
+    setSearchParams((prevParams) => {
+      const newParams = new URLSearchParams(prevParams);
+      if (query) {
+        newParams.set("query_term", query);
+      } else {
+        newParams.delete("query_term"); // 검색어 없을시 제거
+      }
+      return newParams;
+    });
+  };
+
   return (
     <div>
       {loading ? (
         <h1>Loading...</h1>
       ) : (
         <div>
+          {/* 장르 선택 버튼 */}
           <div>
             <ul>
               {genre_list.map((genres_category) => (
@@ -93,16 +119,31 @@ function Home() {
               ))}
             </ul>
           </div>
-          {movies.map((movie) => (
-            <Movie
-              key={movie.id}
-              id={movie.id}
-              coverImg={movie.medium_cover_image}
-              title={movie.title}
-              summary={movie.summary}
-              genres={movie.genres}
+          {/*제목 검색창, onSubmit 새로고침 방지, 실시간 검색*/}
+          <form onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="text"
+              nams="query_term"
+              placeholder="movie title"
+              defaultValue={searchParams.get("query_term") || ""}
+              onChange={(e) => handleSearch(e.target.value)}
             />
-          ))}
+          </form>
+          {/* 영화 목록 */}
+          {movies.length > 0 ? (
+            movies.map((movie) => (
+              <Movie
+                key={movie.id}
+                id={movie.id}
+                coverImg={movie.medium_cover_image}
+                title={movie.title}
+                summary={movie.summary}
+                genres={movie.genres}
+              />
+            ))
+          ) : (
+            <p>No movie found.</p>
+          )}
         </div>
       )}
     </div>
