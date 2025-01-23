@@ -1,0 +1,23 @@
+/* clear button 활성화 확인용 */
+.searchContainer {
+  max-width: 600px; /* 최대 너비 설정 */
+  width: 100%; /* 너비 설정 */
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  outline: none;
+  border-width: 0;
+}
+
+.clearButton {
+  background-color: orange;
+  border: 1px solid #ccc;
+  padding: 8px;
+  cursor: pointer;
+}
