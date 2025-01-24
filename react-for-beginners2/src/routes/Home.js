@@ -5,7 +5,9 @@ import styles from "./Home.module.css";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
-  const [movies, setMovies] = useState([]); // 영화 정보
+  const [moviesByGenre, setMoviesByGenre] = useState({}); // 메인에 출력될 장르별 영화 정보
+  const [filteredMovies, setFilteredMovies] = useState([]); // 검색된 영화들 정보
+  const [isFiltering, setIsFiltering] = useState(false); // 필터링 상태
   const [searchParams, setSearchParams] = useSearchParams();
   const searchInputRef = useRef(null);
 
@@ -41,7 +43,35 @@ function Home() {
   ];
 
   // **메인페이지에 기본적**으로 출력할 장르별 영화들 요청
-  const getMovieByGenres = async () => {};
+  const getMovieByGenres = async () => {
+    setLoading(true);
+    const newMoviesByGenre = {};
+    const url = new URL("https://yts.mx/api/v2/list_movies.json?");
+
+    for (const genre of [
+      "Action",
+      "Animation",
+      "Comedy",
+      "Drama",
+      "Reality-TV",
+    ]) {
+      url.searchParams.set("genre", genre);
+      url.searchParams.set("limit", 10);
+      const response = await fetch(url.toString());
+      const json = await response.json();
+
+      if (json.data.movies) {
+        newMoviesByGenre[genre] = json.data.movies;
+      } else {
+        newMoviesByGenre[genre] = [];
+      }
+    }
+
+    setMoviesByGenre(newMoviesByGenre);
+    setLoading(false);
+
+    // console.log(moviesByGenre); // moviesByGenre 확인용
+  };
 
   // **장르, 영화 제목 검색시** 영화 정보들 출력
   const getFilteredMovies = async () => {
@@ -68,18 +98,33 @@ function Home() {
 
     // 데이터 검증
     if (json.data.movies) {
-      setMovies(json.data.movies);
+      setFilteredMovies(json.data.movies);
     } else {
-      setMovies([]); // 데이터가 없다면 빈 배열로 설정
+      setFilteredMovies([]); // 데이터가 없다면 빈 배열로 설정
     }
 
     setLoading(false); // 로딩 완료
     // console.log(movies);  // 영화들 정보 확인용
   };
 
+  // 검색 필터링시 영화들 정보 로드
   useEffect(() => {
-    getFilteredMovies();
+    const genre = searchParams.get("genre");
+    const query = searchParams.get("query_term");
+
+    if (genre || query) {
+      // 영화 검색 또는 장르 선택하여 검색할 시
+      setIsFiltering(true);
+      getFilteredMovies();
+    } else {
+      setIsFiltering(false); // 메인 화면 띄우기
+    }
   }, [searchParams]); // searchParams가 변경될 때마다 getFilteredMovies 호출
+
+  // 접속시 최소 1회 메인에 출력할 영화들 정보 로드
+  useEffect(() => {
+    getMovieByGenres();
+  }, []);
 
   // SearchParams에 장르 카테고리 변경사항 적용
   const handleGenreChange = (genre) => {
@@ -159,19 +204,43 @@ function Home() {
             )}
           </form>
           {/* 영화 목록 */}
-          {movies.length > 0 ? (
-            movies.map((movie) => (
-              <Movie
-                key={movie.id}
-                id={movie.id}
-                coverImg={movie.medium_cover_image}
-                title={movie.title}
-                summary={movie.summary}
-                genres={movie.genres}
-              />
-            ))
+          {isFiltering ? (
+            /* 선택된 장르, 검색된 영화 정보 출력 */
+            <div>
+              {filteredMovies.length > 0 ? (
+                filteredMovies.map((movie) => (
+                  <Movie
+                    key={movie.id}
+                    id={movie.id}
+                    coverImg={movie.medium_cover_image}
+                    title={movie.title}
+                    summary={movie.summary}
+                    genres={movie.genres}
+                  />
+                ))
+              ) : (
+                <p>No movie found.</p>
+              )}
+            </div>
           ) : (
-            <p>No movie found.</p>
+            /* 기본 메인 영화 정보 출력 */
+            Object.entries(moviesByGenre).map(([genre, movies]) => (
+              <div key={genre}>
+                <h2>{genre}</h2>
+                <div style={{ display: "flex", overflowX: "scroll" }}>
+                  {movies.map((movie) => (
+                    <Movie
+                      key={movie.id}
+                      id={movie.id}
+                      coverImg={movie.medium_cover_image}
+                      title={movie.title}
+                      summary={movie.summary}
+                      genres={movie.genres}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))
           )}
         </div>
       )}
