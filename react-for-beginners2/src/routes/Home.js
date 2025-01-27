@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Movie from "../components/Movie";
+import SlideShow from "../components/SlideShow";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Home.module.css";
 
@@ -9,7 +10,8 @@ function Home() {
   const [filteredMovies, setFilteredMovies] = useState([]); // 검색된 영화들 정보
   const [isFiltering, setIsFiltering] = useState(false); // 필터링 상태
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef(null); // 검색창 연결
+  const [slideMovies, setSlideMovies] = useState([]); // 슬라이드할 영화들 정보
 
   // 장르 정보 하드코딩
   const genre_list = [
@@ -73,7 +75,21 @@ function Home() {
     // console.log(moviesByGenre); // moviesByGenre 확인용
   };
 
-  // **장르, 영화 제목 검색시** 영화 정보들 출력
+  // **슬라이드** 할 영화들 정보 가져오기
+  const getSlideMovies = async () => {
+    const url = new URL("https://yts.mx/api/v2/list_movies.json?");
+    url.searchParams.set("sort_by", "rating");
+    url.searchParams.set("limit", 5);
+
+    const response = await fetch(url.toString());
+    const json = await response.json();
+
+    if (json.data.movies) {
+      setSlideMovies(json.data.movies);
+    }
+  };
+
+  // **장르, 영화 제목 검색시** 영화 정보들 가져오기
   const getFilteredMovies = async () => {
     // url 객체 생성
     const url = new URL("https://yts.mx/api/v2/list_movies.json?");
@@ -124,6 +140,7 @@ function Home() {
   // 접속시 최소 1회 메인에 출력할 영화들 정보 로드
   useEffect(() => {
     getMovieByGenres();
+    getSlideMovies();
   }, []);
 
   // SearchParams에 장르 카테고리 변경사항 적용
@@ -170,6 +187,9 @@ function Home() {
         <h1>Loading...</h1>
       ) : (
         <div>
+          {/*슬라이드 쇼*/}
+          <SlideShow movies={slideMovies} />
+
           {/* 장르 선택 버튼 */}
           <div>
             <ul>
