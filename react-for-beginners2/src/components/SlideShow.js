@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 function SlideShow({ movies }) {
   const [currentSlide, setCurrentSlide] = useState(1); // 슬라이드 인덱스 (중앙부터 시작)
@@ -97,10 +98,12 @@ function SlideShow({ movies }) {
               backgroundImage: `url(${movie.background_image})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
+              display: "flex",
             }}
           >
             <div
               style={{
+                flex: 1, // 좌측에 영화 정보가 차지하는 영역
                 backgroundColor: "rgba(0,0,0,0.5)",
                 padding: "20px",
                 height: "100%",
@@ -110,8 +113,36 @@ function SlideShow({ movies }) {
                 color: "white",
               }}
             >
+              <p>{movie.rating}</p>
               <h2>{movie.title}</h2>
-              <p>{movie.summary}</p>
+              <span>
+                {movie.summary
+                  ? movie.summary.length > 100
+                    ? `${movie.summary.slice(0, 100)}...` // 글자수 출력 길이 조절
+                    : movie.summary
+                  : ""}
+              </span>
+              <button>
+                <Link to={`/movie/${movie.id}`}>상세보기</Link>
+              </button>
+            </div>
+            <div
+              style={{
+                width: "280px", // 이미지 영역의 크기 조정
+                height: "100%",
+                display: "flex",
+                justifyContent: "flex-end", // 이미지를 우측에 정렬
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={movie.medium_cover_image}
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "auto",
+                }}
+              />
             </div>
           </div>
         ))}

@@ -77,6 +77,7 @@ function Home() {
 
   // **슬라이드** 할 영화들 정보 가져오기
   const getSlideMovies = async () => {
+    setLoading(true);
     const url = new URL("https://yts.mx/api/v2/list_movies.json?");
     url.searchParams.set("sort_by", "rating");
     url.searchParams.set("limit", 5);
@@ -87,6 +88,7 @@ function Home() {
     if (json.data.movies) {
       setSlideMovies(json.data.movies);
     }
+    setLoading(false);
   };
 
   // **장르, 영화 제목 검색시** 영화 정보들 가져오기
@@ -119,7 +121,6 @@ function Home() {
       setFilteredMovies([]); // 데이터가 없다면 빈 배열로 설정
     }
 
-    setLoading(false); // 로딩 완료
     // console.log(movies);  // 영화들 정보 확인용
   };
 
