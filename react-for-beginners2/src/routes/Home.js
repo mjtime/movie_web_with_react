@@ -12,6 +12,7 @@ function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchInputRef = useRef(null); // 검색창 연결
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드할 영화들 정보
+  const movieHorizontalScrollRefs = useRef({}); // 장르별 영화 정보 가로 스크롤을 위한 ref
 
   // 장르 정보 하드코딩
   const genre_list = [
@@ -182,6 +183,20 @@ function Home() {
     }
   };
 
+  // 가로 스크롤 버튼
+  const handleNextButtonClick = (genre, nextType) => {
+    if (!movieHorizontalScrollRefs.current[genre]) return;
+
+    movieHorizontalScrollRefs.current[genre].scrollTo({
+      left:
+        movieHorizontalScrollRefs.current[genre].scrollLeft +
+        (nextType === "next"
+          ? movieHorizontalScrollRefs.current[genre].offsetWidth
+          : -movieHorizontalScrollRefs.current[genre].offsetWidth),
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div>
       {loading ? (
@@ -248,17 +263,36 @@ function Home() {
             Object.entries(moviesByGenre).map(([genre, movies]) => (
               <div key={genre}>
                 <h2>{genre}</h2>
-                <div style={{ display: "flex", overflowX: "scroll" }}>
-                  {movies.map((movie) => (
-                    <Movie
-                      key={movie.id}
-                      id={movie.id}
-                      coverImg={movie.medium_cover_image}
-                      title={movie.title}
-                      summary={movie.summary}
-                      genres={movie.genres}
-                    />
-                  ))}
+                <div className="scroll-container">
+                  <button
+                    className="scroll-button-left"
+                    onClick={() => handleNextButtonClick(genre, "prev")}
+                  >
+                    ◁
+                  </button>
+                  <div
+                    ref={(el) =>
+                      (movieHorizontalScrollRefs.current[genre] = el)
+                    }
+                    style={{ display: "flex", overflowX: "scroll" }}
+                  >
+                    {movies.map((movie) => (
+                      <Movie
+                        key={movie.id}
+                        id={movie.id}
+                        coverImg={movie.medium_cover_image}
+                        title={movie.title}
+                        summary={movie.summary}
+                        genres={movie.genres}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    className="scroll-button-right"
+                    onClick={() => handleNextButtonClick(genre, "next")}
+                  >
+                    ▷
+                  </button>
                 </div>
               </div>
             ))
