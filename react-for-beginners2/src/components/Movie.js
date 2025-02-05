@@ -3,7 +3,15 @@ import { Link } from "react-router-dom";
 function Movie({ id, coverImg, title, summary, genres }) {
   return (
     <div>
-      <img src={coverImg}></img>
+      <img
+        src={coverImg}
+        alt={title} // 접근성을 위한 대체 텍스트
+        style={{
+          width: "100%", // 부모 크기에 맞춤
+          height: "auto", // 비율 유지
+          objectFit: "cover", // 비율 깨지지 않도록 설정
+        }}
+      />
       <h2>
         <Link to={`/movie/${id}`}>{title}</Link>
       </h2>

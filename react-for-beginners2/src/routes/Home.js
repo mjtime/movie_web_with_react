@@ -14,6 +14,20 @@ function Home() {
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드할 영화들 정보
   const movieHorizontalScrollRefs = useRef({}); // 장르별 영화 정보 가로 스크롤을 위한 ref
 
+  const getMoviesPerPage = () => {
+    if (window.innerWidth >= 1200) return 7;
+    if (window.innerWidth >= 768) return 5;
+    return 3;
+  };
+
+  const [moviesPerPage, setMoviesPerPage] = useState(getMoviesPerPage());
+
+  useEffect(() => {
+    const handleResize = () => setMoviesPerPage(getMoviesPerPage());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // 장르 정보 하드코딩
   const genre_list = [
     "All",
@@ -187,15 +201,50 @@ function Home() {
   const handleNextButtonClick = (genre, nextType) => {
     if (!movieHorizontalScrollRefs.current[genre]) return;
 
-    movieHorizontalScrollRefs.current[genre].scrollTo({
+    // 영화 출력 개수인 MOVIES_PER_PAGE 만큼 이동
+    const container = movieHorizontalScrollRefs.current[genre];
+    const movieWidth = container.scrollWidth / container.childElementCount;
+    const scrollAmount = movieWidth * moviesPerPage;
+
+    container.scrollTo({
       left:
-        movieHorizontalScrollRefs.current[genre].scrollLeft +
-        (nextType === "next"
-          ? movieHorizontalScrollRefs.current[genre].offsetWidth
-          : -movieHorizontalScrollRefs.current[genre].offsetWidth),
+        container.scrollLeft +
+        (nextType === "next" ? scrollAmount : -scrollAmount),
       behavior: "smooth",
     });
+    // movieHorizontalScrollRefs.current[genre].scrollTo({
+    //   left:
+    //     movieHorizontalScrollRefs.current[genre].scrollLeft +
+    //     (nextType === "next"
+    //       ? movieHorizontalScrollRefs.current[genre].offsetWidth
+    //       : -movieHorizontalScrollRefs.current[genre].offsetWidth),
+    //   behavior: "smooth",
+    // });
   };
+
+  // 창 사이즈 변화시 영화 가로 스크롤 위치 조정
+  useEffect(() => {
+    const handleResize = () => {
+      Object.keys(movieHorizontalScrollRefs.current).forEach((genre) => {
+        const container = movieHorizontalScrollRefs.current[genre];
+        console.log(window.innerWidth);
+        if (container) {
+          const scrollRatio = container.scrollLeft / container.scrollWidth; // 현재 스크롤 비율 저장
+          setTimeout(() => {
+            container.scrollTo({
+              left: scrollRatio * container.scrollWidth, // 비율을 적용한 새로운 위치로 이동
+              behavior: "instant",
+            });
+          }, 100);
+        }
+      });
+    };
+
+    // 처음 마운트시 window에 이벤트 리스너 추가
+    window.addEventListener("resize", handleResize);
+    // 언마운트될 때 이벤트 리스너 제거
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div>
@@ -221,7 +270,7 @@ function Home() {
           {/*제목 검색창, onSubmit 새로고침 방지, 실시간 검색*/}
           <form
             onSubmit={(e) => e.preventDefault()}
-            className={styles.searchContainer}
+            className={styles["search-container"]}
           >
             <input
               type="text"
@@ -233,7 +282,7 @@ function Home() {
               className={styles.searchInput}
             />
             {/* clear button, 검색어가 존재할 시에만 활성화 */}
-            {searchInputRef.current && searchInputRef.current.value && (
+            {searchParams.get("query_term") && (
               <button onClick={clearSearch} className={styles.clearButton}>
                 X
               </button>
@@ -263,7 +312,7 @@ function Home() {
             Object.entries(moviesByGenre).map(([genre, movies]) => (
               <div key={genre}>
                 <h2>{genre}</h2>
-                <div className="scroll-container">
+                <div className={styles["scroll-container"]}>
                   <button
                     className="scroll-button-left"
                     onClick={() => handleNextButtonClick(genre, "prev")}
@@ -271,20 +320,36 @@ function Home() {
                     ◁
                   </button>
                   <div
+                    className={styles["scroll-content"]}
                     ref={(el) =>
                       (movieHorizontalScrollRefs.current[genre] = el)
                     }
-                    style={{ display: "flex", overflowX: "scroll" }}
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      overflowX: "auto",
+                      position: "relative",
+                    }}
                   >
                     {movies.map((movie) => (
-                      <Movie
+                      <div
                         key={movie.id}
-                        id={movie.id}
-                        coverImg={movie.medium_cover_image}
-                        title={movie.title}
-                        summary={movie.summary}
-                        genres={movie.genres}
-                      />
+                        style={{
+                          flex: `0 0 calc(90vw / ${moviesPerPage})`,
+                          minWidth: "10px", // 포스터 사이즈 축소시 다 달라지는 것 방지
+                          // maxWidth: "300px",
+                          aspectRatio: "2/3", // 포스터 비율 유지
+                        }}
+                      >
+                        <Movie
+                          // key={movie.id}
+                          id={movie.id}
+                          coverImg={movie.medium_cover_image}
+                          title={movie.title}
+                          summary={movie.summary}
+                          genres={movie.genres}
+                        />
+                      </div>
                     ))}
                   </div>
                   <button

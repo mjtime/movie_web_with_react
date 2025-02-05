@@ -1,5 +1,5 @@
 /* clear button 활성화 확인용 */
-.searchContainer {
+.search-container {
   max-width: 600px; /* 최대 너비 설정 */
   width: 100%; /* 너비 설정 */
   display: flex;
@@ -20,4 +20,15 @@
   border: 1px solid #ccc;
   padding: 8px;
   cursor: pointer;
+}
+
+.scroll-container {
+}
+
+.scroll-content {
+  scrollbar-width: none; /* Firefox에서 기본 스크롤바 숨김 */
+}
+
+.scroll-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari에서 기본 스크롤바 숨김 */
 }
