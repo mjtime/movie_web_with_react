@@ -13,20 +13,16 @@ function Home() {
   const searchInputRef = useRef(null); // 검색창 연결
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드할 영화들 정보
   const movieHorizontalScrollRefs = useRef({}); // 장르별 영화 정보 가로 스크롤을 위한 ref
+  const [currentScrollPages, setCurrentScrollPages] = useState({}); // 장르별 영화 정보 가로 스크롤 현재 페이지
 
+  // 창 사이즈에 따른 포스터 개수, 테스크탑, 태블릿, 모바일
   const getMoviesPerPage = () => {
-    if (window.innerWidth >= 1200) return 7;
-    if (window.innerWidth >= 768) return 5;
+    if (window.innerWidth >= 1200) return 9;
+    if (window.innerWidth >= 768) return 6;
     return 3;
   };
 
   const [moviesPerPage, setMoviesPerPage] = useState(getMoviesPerPage());
-
-  useEffect(() => {
-    const handleResize = () => setMoviesPerPage(getMoviesPerPage());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // 장르 정보 하드코딩
   const genre_list = [
@@ -73,7 +69,7 @@ function Home() {
       "Reality-TV",
     ]) {
       url.searchParams.set("genre", genre);
-      url.searchParams.set("limit", 10);
+      url.searchParams.set("limit", 18);
       const response = await fetch(url.toString());
       const json = await response.json();
 
@@ -92,7 +88,6 @@ function Home() {
 
   // **슬라이드** 할 영화들 정보 가져오기
   const getSlideMovies = async () => {
-    setLoading(true);
     const url = new URL("https://yts.mx/api/v2/list_movies.json?");
     url.searchParams.set("sort_by", "rating");
     url.searchParams.set("limit", 5);
@@ -103,7 +98,6 @@ function Home() {
     if (json.data.movies) {
       setSlideMovies(json.data.movies);
     }
-    setLoading(false);
   };
 
   // **장르, 영화 제목 검색시** 영화 정보들 가져오기
@@ -119,7 +113,7 @@ function Home() {
 
     // 영화 제목 필터 추가
     const query = searchParams.get("query_term");
-    if (query) {
+    if (query && query.length > 1) {
       url.searchParams.set("query_term", query);
     }
 
@@ -203,7 +197,8 @@ function Home() {
 
     // 영화 출력 개수인 MOVIES_PER_PAGE 만큼 이동
     const container = movieHorizontalScrollRefs.current[genre];
-    const movieWidth = container.scrollWidth / container.childElementCount;
+    const childCount = container.childElementCount || 1; // 0이면 1로 처리 (NaN 방지)
+    const movieWidth = container.scrollWidth / childCount;
     const scrollAmount = movieWidth * moviesPerPage;
 
     container.scrollTo({
@@ -212,39 +207,74 @@ function Home() {
         (nextType === "next" ? scrollAmount : -scrollAmount),
       behavior: "smooth",
     });
-    // movieHorizontalScrollRefs.current[genre].scrollTo({
-    //   left:
-    //     movieHorizontalScrollRefs.current[genre].scrollLeft +
-    //     (nextType === "next"
-    //       ? movieHorizontalScrollRefs.current[genre].offsetWidth
-    //       : -movieHorizontalScrollRefs.current[genre].offsetWidth),
-    //   behavior: "smooth",
-    // });
   };
 
-  // 창 사이즈 변화시 영화 가로 스크롤 위치 조정
+  // 창 사이즈 변경시 스크롤의 영화 포스터 사이즈 변경
+  // 창 사이즈 변화시 영화 가로 스크롤 위치 조정, 보던 스크롤 위치 유지
   useEffect(() => {
     const handleResize = () => {
+      setMoviesPerPage(getMoviesPerPage());
+
+      // 가로 스크롤 위치 유지
       Object.keys(movieHorizontalScrollRefs.current).forEach((genre) => {
         const container = movieHorizontalScrollRefs.current[genre];
-        console.log(window.innerWidth);
         if (container) {
-          const scrollRatio = container.scrollLeft / container.scrollWidth; // 현재 스크롤 비율 저장
+          const scrollRatio = container.scrollLeft / container.scrollWidth;
           setTimeout(() => {
             container.scrollTo({
-              left: scrollRatio * container.scrollWidth, // 비율을 적용한 새로운 위치로 이동
+              left: scrollRatio * container.scrollWidth,
               behavior: "instant",
             });
           }, 100);
         }
       });
-    };
 
+      // currentScrollPages 유지
+      setCurrentScrollPages((prevPages) => {
+        const updatedPages = {};
+        Object.keys(prevPages).forEach((genre) => {
+          updatedPages[genre] = prevPages[genre] || 0;
+        });
+        return updatedPages;
+      });
+    };
     // 처음 마운트시 window에 이벤트 리스너 추가
     window.addEventListener("resize", handleResize);
     // 언마운트될 때 이벤트 리스너 제거
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // **가로 스크롤 진행(페이지)** 초기화
+  useEffect(() => {
+    const initialPages = {};
+    Object.keys(moviesByGenre).forEach((genre) => {
+      initialPages[genre] = 0; // 처음엔 모두 첫 페이지로 설정
+    });
+    setCurrentScrollPages(initialPages);
+  }, [moviesByGenre]); // 장르별 영화 정보가 변경될 때 실행
+
+  // **가로 스크롤 진행(페이지)** 표시
+  const handleCurrentScroll = (genre) => {
+    if (!movieHorizontalScrollRefs.current[genre]) return;
+
+    // 어떤 영화 장르 스크롤인가
+    const container = movieHorizontalScrollRefs.current[genre];
+    // 스크롤의 왼쪽 위치(px)
+    const scrollLeft = container.scrollLeft;
+    // 화면에 보이는(한 페이지) 스크롤 길이 / 스크롤 자식의 요소 수
+    const movieWidth = container.scrollWidth / container.childElementCount;
+    // (스크롤 좌측 위치 / 화면에 보이는 스크롤 길이 * 페이지당 영화 출력 개수)
+    const newPage = Math.round(scrollLeft / (movieWidth * moviesPerPage));
+
+    // 페이지 위치 갱신
+    setCurrentScrollPages((prevPages) => {
+      // 값이 변경될 때만 업데이트
+      if (prevPages[genre] !== newPage) {
+        return { ...prevPages, [genre]: newPage };
+      }
+      return prevPages;
+    });
+  };
 
   return (
     <div>
@@ -313,6 +343,35 @@ function Home() {
               <div key={genre}>
                 <h2>{genre}</h2>
                 <div className={styles["scroll-container"]}>
+                  {/* 스크롤 페이지 진행 상태 출력 */}
+                  <ul
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "10px",
+                      listStyle: "none",
+                      padding: 0,
+                    }}
+                  >
+                    {Array.from({
+                      length: Math.ceil(movies.length / moviesPerPage),
+                    }).map((_, index) => (
+                      <li
+                        key={index}
+                        style={{
+                          width: "10px",
+                          height: "10px",
+                          margin: "5px",
+                          borderRadius: "50%",
+                          backgroundColor:
+                            index === currentScrollPages[genre]
+                              ? "orange"
+                              : "#555",
+                          transition: "background-color 0.3s",
+                        }}
+                      />
+                    ))}
+                  </ul>
                   <button
                     className="scroll-button-left"
                     onClick={() => handleNextButtonClick(genre, "prev")}
@@ -324,6 +383,7 @@ function Home() {
                     ref={(el) =>
                       (movieHorizontalScrollRefs.current[genre] = el)
                     }
+                    onScroll={() => handleCurrentScroll(genre)}
                     style={{
                       display: "flex",
                       gap: "10px",
