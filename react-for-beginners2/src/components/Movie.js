@@ -2,21 +2,32 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 function Movie({ id, coverImg, title, summary, genres }) {
   return (
-    <div>
+    <div
+      style={{
+        flex: "0 0 160px", // 가로 크기 고정
+        minHeight: "300px", // 타이틀, 장르 포함한 전체 높이
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
       <img
         src={coverImg}
-        alt={title} // 접근성을 위한 대체 텍스트
+        alt={title}
         style={{
-          width: "100%", // 부모 크기에 맞춤
-          height: "auto", // 비율 유지
-          objectFit: "cover", // 비율 깨지지 않도록 설정
+          width: "100%",
+          height: "auto", // 포스터 비율 유지
+          objectFit: "cover",
         }}
       />
-      <h2>
+      <h2 style={{ fontSize: "14px", margin: "5px 0" }}>
         <Link to={`/movie/${id}`}>{title}</Link>
       </h2>
-      <p>{summary}</p>
-      <ul>
+      <p style={{ fontSize: "12px", maxHeight: "60px", overflow: "hidden" }}>
+        {summary}
+      </p>
+      <ul style={{ fontSize: "12px", padding: 0, listStyle: "none" }}>
         {genres.map((g) => (
           <li key={g}>{g}</li>
         ))}
