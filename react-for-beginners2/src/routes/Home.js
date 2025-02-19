@@ -355,7 +355,7 @@ function Home() {
                         position: "relative",
                         width: "100vw", // 전체 영역 (px 단위 계산은 내부에서)
                         margin: "0 auto",
-                        overflow: "hidden",
+                        // overflow: "hidden",
                       }}
                     >
                       {/* 실제 컨텐츠 영역: 좌우 previewPx 만큼 여백 */}
@@ -393,6 +393,33 @@ function Home() {
                           ))}
                         </div>
                       </div>
+                      {/* 좌측 오버레이: 왼쪽 previewPx 영역에 반투명 검정 그라데이션 */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          width: `${previewPx}px`,
+                          background:
+                            "linear-gradient(to right, rgba(0,0,0,0.8), transparent)",
+                          pointerEvents: "none",
+                        }}
+                      ></div>
+
+                      {/* 우측 오버레이: 오른쪽 previewPx 영역에 반투명 검정 그라데이션 */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          width: `${previewPx}px`,
+                          background:
+                            "linear-gradient(to left, rgba(0,0,0,0.8), transparent)",
+                          pointerEvents: "none",
+                        }}
+                      ></div>
                     </div>
 
                     <button
