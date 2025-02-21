@@ -28,6 +28,9 @@ function Home() {
   const containerRefs = useRef({});
   const [containerWidths, setContainerWidths] = useState({});
 
+  // 마우스 오버된 장르 저장 (슬라이드에 버튼 노출 제어)
+  const [hoveredGenre, setHoveredGenre] = useState(null);
+
   // 장르 목록 (하드코딩)
   const genre_list = [
     "All",
@@ -341,13 +344,6 @@ function Home() {
                   </ul>
 
                   <div className={styles["scroll-container"]}>
-                    <button
-                      className="scroll-button-left"
-                      onClick={() => handlePrevButtonClick(genre)}
-                    >
-                      ◁
-                    </button>
-
                     {/* 스크롤 슬라이드 영역 */}
                     <div
                       ref={(el) => (containerRefs.current[genre] = el)}
@@ -357,6 +353,8 @@ function Home() {
                         margin: "0 auto",
                         // overflow: "hidden",
                       }}
+                      onMouseEnter={() => setHoveredGenre(genre)}
+                      onMouseLeave={() => setHoveredGenre(null)}
                     >
                       {/* 실제 컨텐츠 영역: 좌우 previewPx 만큼 여백 */}
                       <div
@@ -403,9 +401,39 @@ function Home() {
                           width: `${previewPx}px`,
                           background:
                             "linear-gradient(to right, rgba(0,0,0,0.8), transparent)",
-                          pointerEvents: "none",
                         }}
-                      ></div>
+                      >
+                        {/* 좌우 버튼 (호버 시만 opacity:1) 
+                        왼쪽 버튼 표시 조건: 현재 페이지가 0보다 크거나 왼쪽에 남은 포스터가 있는 경우
+                        */}
+                        {(pageIndex > 0 ||
+                          (leftPosterIndex[genre]
+                            ? leftPosterIndex[genre] % moviesPerPage !== 0
+                            : false)) && (
+                          <button
+                            onClick={() => handlePrevButtonClick(genre)}
+                            style={{
+                              position: "absolute",
+                              height: "100%",
+                              width: "100%",
+                              top: "50%",
+                              left: "10px",
+                              transform: "translateY(-50%)",
+                              opacity: hoveredGenre === genre ? 1 : 0,
+                              transition: "opacity 0.3s",
+                              zIndex: 3,
+                              backgroundColor: "transparent",
+                              border: "none",
+                              color: "white",
+                              padding: "10px",
+                              cursor: "pointer",
+                              fontSize: "30px",
+                            }}
+                          >
+                            ◀
+                          </button>
+                        )}
+                      </div>
 
                       {/* 우측 오버레이: 오른쪽 previewPx 영역에 반투명 검정 그라데이션 */}
                       <div
@@ -417,17 +445,34 @@ function Home() {
                           width: `${previewPx}px`,
                           background:
                             "linear-gradient(to left, rgba(0,0,0,0.8), transparent)",
-                          pointerEvents: "none",
                         }}
-                      ></div>
+                      >
+                        {pageIndex < totalPages - 1 && (
+                          <button
+                            onClick={() => handleNextButtonClick(genre)}
+                            style={{
+                              position: "absolute",
+                              height: "100%",
+                              width: "100%",
+                              top: "50%",
+                              right: "10px",
+                              transform: "translateY(-50%)",
+                              opacity: hoveredGenre === genre ? 1 : 0,
+                              transition: "opacity 0.3s",
+                              zIndex: 3,
+                              backgroundColor: "transparent",
+                              border: "none",
+                              color: "white",
+                              padding: "10px",
+                              cursor: "pointer",
+                              fontSize: "30px",
+                            }}
+                          >
+                            ▶
+                          </button>
+                        )}
+                      </div>
                     </div>
-
-                    <button
-                      className="scroll-button-right"
-                      onClick={() => handleNextButtonClick(genre)}
-                    >
-                      ▷
-                    </button>
                   </div>
                 </div>
               );
