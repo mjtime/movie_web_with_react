@@ -158,10 +158,10 @@ function Home() {
     setContainerWidths(newWidths);
   };
 
-  // 영화 데이터가 로드된 후 한 번 측정
+  // 영화 데이터가 로드된 후, 검색창에서 메인화면으로 돌아왔을 때 측정
   useEffect(() => {
     handleContainerResize();
-  }, [moviesByGenre]);
+  }, [moviesByGenre, isFiltering]);
 
   // 다음 버튼 (한 페이지씩 이동)
   const handleNextButtonClick = (genre) => {
@@ -250,7 +250,7 @@ function Home() {
           {/* 제목 검색창 */}
           <form
             onSubmit={(e) => e.preventDefault()}
-            className={styles["search-container"]}
+            className={styles.searchContainer}
           >
             <input
               type="text"
@@ -270,17 +270,19 @@ function Home() {
 
           {/* 영화 목록 */}
           {isFiltering ? (
-            <div>
+            <div className={styles.gridContainer}>
               {filteredMovies.length > 0 ? (
                 filteredMovies.map((movie) => (
-                  <Movie
-                    key={movie.id}
-                    id={movie.id}
-                    coverImg={movie.medium_cover_image}
-                    title={movie.title}
-                    summary={movie.summary}
-                    genres={movie.genres}
-                  />
+                  <div key={movie.id} className={styles.movieHover}>
+                    <Movie
+                      // key={movie.id}
+                      id={movie.id}
+                      coverImg={movie.medium_cover_image}
+                      title={movie.title}
+                      summary={movie.summary}
+                      genres={movie.genres}
+                    />
+                  </div>
                 ))
               ) : (
                 <p>No movie found.</p>
@@ -343,7 +345,7 @@ function Home() {
                     ))}
                   </ul>
 
-                  <div className={styles["scroll-container"]}>
+                  <div className={styles.scrollContainer}>
                     {/* 스크롤 슬라이드 영역 */}
                     <div
                       ref={(el) => (containerRefs.current[genre] = el)}
@@ -375,6 +377,7 @@ function Home() {
                         >
                           {movies.map((movie) => (
                             <div
+                              className={styles.movieHover}
                               key={movie.id}
                               style={{
                                 flex: `0 0 ${itemWidthPx}px`,

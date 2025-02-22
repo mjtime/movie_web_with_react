@@ -5,7 +5,7 @@ body {
 }
 
 /* clear button 활성화 확인용 */
-.search-container {
+.searchContainer {
   max-width: 600px; /* 최대 너비 설정 */
   width: 100%; /* 너비 설정 */
   display: flex;
@@ -28,13 +28,18 @@ body {
   cursor: pointer;
 }
 
-.scroll-container {
+.movieHover {
+  transition: transform 0.3s ease;
 }
 
-.scroll-content {
-  scrollbar-width: none; /* Firefox에서 기본 스크롤바 숨김 */
+.movieHover:hover {
+  transform: scale(1.05);
 }
 
-.scroll-content::-webkit-scrollbar {
-  display: none; /* Chrome, Safari에서 기본 스크롤바 숨김 */
+.gridContainer {
+  display: grid;
+  /* 각 열의 너비가 최소 200px, 최대 auto*/
+  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+  justify-content: center; /* 전체를 중앙 정렬 */
+  gap: 10px; /* 아이템 간 간격 */
 }
