@@ -38,8 +38,7 @@ body {
 
 .gridContainer {
   display: grid;
-  /* 각 열의 너비가 최소 200px, 최대 auto*/
-  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
-  justify-content: center; /* 전체를 중앙 정렬 */
+  /* 각 열은 최소 200px, 남는 공간은 균등 분배(최대 1fr) */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px; /* 아이템 간 간격 */
 }
