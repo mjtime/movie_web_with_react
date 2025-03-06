@@ -18,8 +18,10 @@ function Home() {
 
   // 창 크기에 따른 한 페이지당 영화 개수 (데스크탑, 태블릿, 모바일)
   const getMoviesPerPage = () => {
-    if (window.innerWidth >= 1200) return 9;
-    if (window.innerWidth >= 768) return 6;
+    if (window.innerWidth >= 1470) return 9;
+    if (window.innerWidth >= 1270) return 7;
+    if (window.innerWidth >= 970) return 6;
+    if (window.innerWidth >= 768) return 4;
     return 3;
   };
   const [moviesPerPage, setMoviesPerPage] = useState(getMoviesPerPage());
@@ -273,16 +275,14 @@ function Home() {
             <div className={styles.gridContainer}>
               {filteredMovies.length > 0 ? (
                 filteredMovies.map((movie) => (
-                  <div key={movie.id} className={styles.movieHover}>
-                    <Movie
-                      // key={movie.id}
-                      id={movie.id}
-                      coverImg={movie.medium_cover_image}
-                      title={movie.title}
-                      summary={movie.summary}
-                      genres={movie.genres}
-                    />
-                  </div>
+                  <Movie
+                    key={movie.id}
+                    id={movie.id}
+                    coverImg={movie.medium_cover_image}
+                    title={movie.title}
+                    summary={movie.summary}
+                    genres={movie.genres}
+                  />
                 ))
               ) : (
                 <p>No movie found.</p>
@@ -290,13 +290,24 @@ function Home() {
             </div>
           ) : (
             Object.entries(moviesByGenre).map(([genre, movies]) => {
+              /*
+              < 역할 설명 >
+              containerWidth: 해당 장르 슬라이드 컨테이너의 실제 너비 (px)
+              PREVIEW_PX: 양쪽에 남길 고정 프리뷰 영역 (px)
+              contentWidth: 실제 포스터들이 채워질 영역의 너비 = containerWidth - 2 * PREVIEW_PX
+              moviesPerPage: 한 페이지에 보여줄 포스터 개수 (창 크기에 따라 동적으로 결정)
+              GAP_PX: 포스터 사이의 간격 (px)
+              itemWidthPx: 각 포스터의 폭 = (contentWidth - GAP_PX * (moviesPerPage - 1)) / moviesPerPage
+              offsetPx: 현재 leftPosterIndex에 따른 이동 거리 = currentIndex * (itemWidthPx + GAP_PX)
+              */
+
               const currentIndex = leftPosterIndex[genre] || 0;
               // containerWidths[genre]가 측정된 값 (px)
               const containerWidth = containerWidths[genre] || 0;
 
               // 고정값: 양쪽 프리뷰 영역과 gap
               const previewPx = 80; // 양쪽 프리뷰 (좌우 각각 80px)
-              const gapPx = 10; // 포스터 사이 간격
+              const gapPx = 2; // 포스터 사이 간격
 
               // 실제 컨텐츠 영역 너비 = containerWidth - 2*previewPx
               const contentWidth = Math.max(containerWidth - 2 * previewPx, 0);

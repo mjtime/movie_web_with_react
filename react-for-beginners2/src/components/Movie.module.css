@@ -1,0 +1,60 @@
+.movieContainer {
+  position: relative;
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+
+.movieContainer:hover {
+  /* 포스터와 오버레이 함께 확장*/
+  transform: scale(1.1);
+  z-index: 2; /* 다음 포스터에 가려지지 않게함*/
+}
+
+.movieImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* 마우스 오버시 오버레이 표시 */
+.movieContainer:hover .overlay {
+  opacity: 1;
+}
+
+.overlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(5px, 3vw, 50px);
+  /* 최소 10px, 5% 비율, 최대 50px */
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+}
+
+.overlayTitle {
+  font-size: 18px;
+  margin: 0;
+}
+
+.overlayGenreList {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0;
+  font-size: 14px;
+}

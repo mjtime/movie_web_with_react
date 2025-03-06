@@ -1,38 +1,27 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import styles from "./Movie.module.css";
+
 function Movie({ id, coverImg, title, summary, genres }) {
+  // 장르 3개까지만 출력, 그 외에는 '⋮' 출력
+  const displayedGenres =
+    genres.length > 3 ? genres.slice(0, 3).concat("⋮") : genres;
   return (
-    <div
-      style={{
-        flex: "0 0 160px", // 가로 크기 고정
-        minHeight: "300px", // 타이틀, 장르 포함한 전체 높이
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-      }}
-    >
-      <img
-        src={coverImg}
-        alt={title}
-        style={{
-          width: "100%",
-          height: "auto", // 포스터 비율 유지
-          objectFit: "cover",
-        }}
-      />
-      <h2 style={{ fontSize: "14px", margin: "5px 0" }}>
-        <Link to={`/movie/${id}`}>{title}</Link>
-      </h2>
-      <p style={{ fontSize: "12px", maxHeight: "60px", overflow: "hidden" }}>
-        {summary}
-      </p>
-      <ul style={{ fontSize: "12px", padding: 0, listStyle: "none" }}>
-        {genres.map((g) => (
-          <li key={g}>{g}</li>
-        ))}
-      </ul>
-    </div>
+    <Link to={`/movie/${id}`} className={styles.movieLink}>
+      <div className={styles.movieContainer}>
+        <img className={styles.movieImage} src={coverImg} alt={title} />
+        <div className={styles.overlay}>
+          <div className={styles.overlayContent}>
+            <h2 className={styles.overlayTitle}>{title}</h2>
+            <ul className={styles.overlayGenreList}>
+              {displayedGenres.map((g) => (
+                <li key={g}>{g}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 }
 
