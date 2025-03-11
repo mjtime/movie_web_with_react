@@ -1,9 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-  /* background-color: black; */
-}
-
 /* clear button 활성화 확인용 */
 .searchContainer {
   max-width: 600px; /* 최대 너비 설정 */
