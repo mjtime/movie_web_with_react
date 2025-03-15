@@ -260,6 +260,7 @@ function Home() {
               placeholder="movie title"
               defaultValue={searchParams.get("query_term") || ""}
               onChange={(e) => handleSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && e.preventDefault()} // 엔터키 입력 방지
               ref={searchInputRef}
               className={styles.searchInput}
             />
