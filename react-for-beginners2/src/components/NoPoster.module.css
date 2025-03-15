@@ -1,0 +1,10 @@
+.noImage {
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background-color: #303030;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}

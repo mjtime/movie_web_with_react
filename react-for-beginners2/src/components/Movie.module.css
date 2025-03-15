@@ -1,3 +1,7 @@
+.movieLink {
+  text-decoration: none;
+}
+
 .movieContainer {
   position: relative;
   transition: transform 0.3s ease;

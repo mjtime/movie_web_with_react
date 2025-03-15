@@ -60,16 +60,23 @@ h1 {
   z-index: 1;
 }
 
-.moviePosterImage {
-  height: auto;
+.moviePosterContainer {
   flex-grow: 1;
-  flex-shrink: 0; /* 너무 작아지는 것 방지 */
-  flex-basis: 20%; /* 기본 크기 설정 */
-  max-width: 250px; /* 최대 크기 설정 (비율 유지) */
-  min-width: 150px; /* 최소 크기 설정 */
+  flex-shrink: 0;
+  flex-basis: 20%;
+  max-width: 250px;
+  min-width: 150px;
   margin: 0 2%;
-  object-fit: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+.moviePosterImage {
+  width: 100%; /* 부모 컨테이너 폭에 맞춰 */
+  height: auto; /* 비율 유지 */
+  object-fit: contain; /* 이미지를 컨테이너 범위 안에 맞추기 */
+}
+
 .movieInformation {
   flex-grow: 5;
   margin: 10% 0 0 3%;
