@@ -19,11 +19,12 @@ h1 {
 }
 .detailContainer {
   position: relative;
+  height: 100%;
 }
 
 .movieBackgroundImage {
   width: 100%;
-  height: auto;
+  height: 50%;
   object-fit: cover;
 }
 
@@ -36,22 +37,38 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: flex-start; /* 상단 고정 */
-  padding-top: 10px; /* 필요에 따라 여백 추가 */
+  background-color: black;
+}
 
+/* ::before를 사용한 그라데이션 오버레이 */
+.detailWrapper::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: 0;
+  width: 100%;
+  height: 50px;
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.7) 10%,
-    black 25%
+    rgba(0, 0, 0, 0.7) 70%,
+    black 100%
   );
 }
 .detailContent {
   position: relative;
   display: flex;
+  flex-direction: column;
   width: 70%;
   min-height: auto;
   height: auto;
   color: white;
+}
+.detailHeader {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  width: 100%;
 }
 
 .movieInformation,
@@ -64,22 +81,23 @@ h1 {
   flex-grow: 1;
   flex-shrink: 0;
   flex-basis: 20%;
-  max-width: 250px;
+  max-width: 200px;
   min-width: 150px;
   margin: 0 2%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* 상단 고정 */
 }
 .moviePosterImage {
-  width: 100%; /* 부모 컨테이너 폭에 맞춰 */
+  width: 100%;
   height: auto; /* 비율 유지 */
   object-fit: contain; /* 이미지를 컨테이너 범위 안에 맞추기 */
+  margin-top: -50%; /* 이미지를 상단으로 이동 */
 }
 
 .movieInformation {
   flex-grow: 5;
-  margin: 10% 0 0 3%;
+  margin-right: 3%;
 }
 
 .movieDetail {
@@ -94,11 +112,11 @@ h1 {
 }
 
 .genresList li {
-  background-color: white;
   padding: 5px;
   border-radius: 10px;
   font-size: 14px;
-  color: #333;
+  color: white;
+  border: 1.3px solid white;
 }
 .genresList li::before {
   content: "#";

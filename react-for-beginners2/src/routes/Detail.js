@@ -40,46 +40,51 @@ function Detail() {
             className={styles.movieBackgroundImage}
             src={movie.background_image}
           />
+
           <div className={styles.detailWrapper}>
             <div className={styles.detailContent}>
-              <div className={styles.movieInformation}>
-                <h2>{movie.title}</h2>
-                <div className={styles.movieDetail}>
-                  <p>
-                    {movie.year} | {movie.language}
-                  </p>
-                  <p>
-                    ⏰{movie.runtime}m | ⭐{movie.rating}/10 | 💗
-                    {movie.like_count}
-                  </p>
-                  <p className={styles.genresList}>
-                    {movie.genres.map((g) => (
-                      <li key={g}>{g}</li>
-                    ))}
-                  </p>
-                  <p>{movie.description_intro}</p>
+              <div className={styles.detailHeader}>
+                <div className={styles.movieInformation}>
+                  <h2>{movie.title}</h2>
+                  <div className={styles.movieDetail}>
+                    <p>
+                      {movie.year} | {movie.language}
+                    </p>
+                    <p>
+                      ⏰{movie.runtime}m | ⭐{movie.rating}/10 | 💗
+                      {movie.like_count}
+                    </p>
+                    <p className={styles.genresList}>
+                      {movie.genres.map((g) => (
+                        <li key={g}>{g}</li>
+                      ))}
+                    </p>
+                  </div>
+                </div>
+                <div className={styles.moviePosterContainer}>
+                  {!imgError ? (
+                    <img
+                      className={styles.moviePosterImage}
+                      src={movie.medium_cover_image}
+                      alt={movie.title}
+                      onError={() => setImgError(true)}
+                      // 로딩된 이미지 너비 0이면 에러로 처리
+                      onLoad={(e) => {
+                        if (e.target.naturalWidth === 0) {
+                          setImgError(true);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <NoPoster
+                      title={movie.title}
+                      className={styles.moviePosterImage}
+                    />
+                  )}
                 </div>
               </div>
-              <div className={styles.moviePosterContainer}>
-                {!imgError ? (
-                  <img
-                    className={styles.moviePosterImage}
-                    src={movie.medium_cover_image}
-                    alt={movie.title}
-                    onError={() => setImgError(true)}
-                    // 로딩된 이미지 너비 0이면 에러로 처리
-                    onLoad={(e) => {
-                      if (e.target.naturalWidth === 0) {
-                        setImgError(true);
-                      }
-                    }}
-                  />
-                ) : (
-                  <NoPoster
-                    title={movie.title}
-                    className={styles.moviePosterImage}
-                  />
-                )}
+              <div className={styles.detailMain}>
+                <p>{movie.description_intro}</p>
               </div>
             </div>
           </div>
