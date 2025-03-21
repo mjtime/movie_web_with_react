@@ -7,6 +7,8 @@ function Detail() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [imgError, setImgError] = useState(false); // 포스터 이미지 로딩 상태
+  const [isExpanded, setIsExpanded] = useState(false); // 줄거리 확장 여부
+  const descriptionThreshold = 300; // 표시할 줄거리 길이
   const getMovie = async () => {
     const json = await (
       await fetch(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
@@ -21,6 +23,13 @@ function Detail() {
   useEffect(() => {
     getMovie();
   }, []);
+
+  // 줄거리 더보기 기능
+  // movie.description_intro가 긴 경우 잘린 텍스트와 전체 텍스트 결정
+  const truncatedDescription =
+    movie && movie.description_intro.length > descriptionThreshold
+      ? movie.description_intro.substring(0, descriptionThreshold) + "..."
+      : movie && movie.description_intro;
 
   return (
     <div className={styles.detailPageContainer}>
@@ -84,7 +93,20 @@ function Detail() {
                 </div>
               </div>
               <div className={styles.detailMain}>
-                <p>{movie.description_intro}</p>
+                <p style={{ whiteSpace: "pre-wrap" }}>
+                  {isExpanded ? movie.description_intro : truncatedDescription}
+                  <span>
+                    {movie.description_intro &&
+                      movie.description_intro.length > descriptionThreshold && (
+                        <button
+                          className={styles.toggleButton}
+                          onClick={() => setIsExpanded((prev) => !prev)}
+                        >
+                          {isExpanded ? "접기" : "더보기"}
+                        </button>
+                      )}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
