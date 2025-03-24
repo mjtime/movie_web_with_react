@@ -233,9 +233,6 @@ function Home() {
         <h1>Loading...</h1>
       ) : (
         <div>
-          {/* 슬라이드 쇼 */}
-          <SlideShow movies={slideMovies} />
-
           {/* 장르 버튼 */}
           <div>
             <ul>
@@ -270,6 +267,9 @@ function Home() {
               </button>
             )}
           </form>
+
+          {/* 슬라이드 쇼 */}
+          {isFiltering ? null : <SlideShow movies={slideMovies} />}
 
           {/* 영화 목록 */}
           {isFiltering ? (
