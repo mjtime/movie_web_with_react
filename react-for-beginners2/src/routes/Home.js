@@ -12,6 +12,7 @@ function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchInputRef = useRef(null); // 검색창 연결
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드쇼 영화 정보
+  const [selectedGenre, setSelectedGenre] = useState("All"); // 선택된 장르 상태 추가
 
   // 각 장르별 현재 "왼쪽 포스터 인덱스" (페이지 단위 이동)
   const [leftPosterIndex, setLeftPosterIndex] = useState({});
@@ -191,6 +192,7 @@ function Home() {
 
   // 장르 선택
   const handleGenreChange = (genre) => {
+    setSelectedGenre(genre);
     setSearchParams((prevParams) => {
       const newParams = new URLSearchParams(prevParams);
       if (genre === "All") {
@@ -228,46 +230,53 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className={styles.homePagecontainer}>
       {loading ? (
         <h1>Loading...</h1>
       ) : (
         <div>
-          {/* 장르 버튼 */}
-          <div>
-            <ul>
+          <div className={styles.filterContainer}>
+            {/* 장르 버튼 */}
+            <ul className={styles.genreMenu}>
               {genre_list.map((genres_category) => (
                 <li key={genres_category}>
-                  <button onClick={() => handleGenreChange(genres_category)}>
+                  <button
+                    onClick={() => handleGenreChange(genres_category)}
+                    className={
+                      selectedGenre === genres_category
+                        ? styles.selectedGenre
+                        : ""
+                    }
+                  >
                     {genres_category}
                   </button>
                 </li>
               ))}
             </ul>
+
+            {/* 제목 검색창 */}
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className={styles.searchContainer}
+            >
+              <span className={styles.iconSearch}>🔍</span>
+              <input
+                type="text"
+                name="query_term"
+                placeholder="movie title"
+                defaultValue={searchParams.get("query_term") || ""}
+                onChange={(e) => handleSearch(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && e.preventDefault()} // 엔터키 입력 방지
+                ref={searchInputRef}
+                className={styles.searchInput}
+              />
+              {searchParams.get("query_term") && (
+                <button onClick={clearSearch} className={styles.clearButton}>
+                  X
+                </button>
+              )}
+            </form>
           </div>
-
-          {/* 제목 검색창 */}
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className={styles.searchContainer}
-          >
-            <input
-              type="text"
-              name="query_term"
-              placeholder="movie title"
-              defaultValue={searchParams.get("query_term") || ""}
-              onChange={(e) => handleSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && e.preventDefault()} // 엔터키 입력 방지
-              ref={searchInputRef}
-              className={styles.searchInput}
-            />
-            {searchParams.get("query_term") && (
-              <button onClick={clearSearch} className={styles.clearButton}>
-                X
-              </button>
-            )}
-          </form>
-
           {/* 슬라이드 쇼 */}
           {isFiltering ? null : <SlideShow movies={slideMovies} />}
 

@@ -1,25 +1,6 @@
-/* clear button 활성화 확인용 */
-.searchContainer {
-  max-width: 600px; /* 최대 너비 설정 */
-  width: 100%; /* 너비 설정 */
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-}
-
-.searchInput {
-  flex: 1;
-  padding: 8px;
-  font-size: 16px;
-  outline: none;
-  border-width: 0;
-}
-
-.clearButton {
-  background-color: orange;
-  border: 1px solid #ccc;
-  padding: 8px;
-  cursor: pointer;
+.homePagecontainer {
+  background-color: black;
+  height: 100%;
 }
 
 .gridContainer {
@@ -27,4 +8,70 @@
   /* 각 열은 최소 200px, 남는 공간은 균등 분배(최대 1fr) */
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 2px; /* 아이템 간 간격 */
+}
+
+/* 메뉴 - 장르 */
+.filterContainer {
+  display: flex;
+}
+.genreMenu {
+  /* ul의 기본 마진(상단), 패딩 제거 */
+  padding: 0;
+  margin-top: 0;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: 6px 10px;
+}
+
+.genreMenu button {
+  background-color: transparent;
+  color: white;
+  padding: 4px 8px;
+  border: solid 1px white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.genreMenu button.selectedGenre {
+  background-color: white;
+  color: black;
+}
+
+/* 검색창 */
+.searchContainer {
+  position: relative;
+  margin: 0 3px;
+  display: flex;
+  align-items: center;
+}
+
+.iconSearch {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+}
+.searchInput {
+  padding: 8px;
+  font-size: 16px;
+  outline: none;
+  border-width: 0;
+  color: white;
+  border-bottom: white 1px solid;
+  background-color: transparent;
+  padding-left: 30px; /* 왼쪽에 검색 아이콘 공간 확보 */
+  padding-right: 40px; /* X 버튼 공간 확보 */
+}
+
+.clearButton {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
 }
