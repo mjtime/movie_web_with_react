@@ -13,6 +13,7 @@ function Home() {
   const searchInputRef = useRef(null); // 검색창 연결
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드쇼 영화 정보
   const [selectedGenre, setSelectedGenre] = useState("All"); // 선택된 장르 상태 추가
+  const [menuEl, setMenuEl] = useState(null); // 장르 메뉴 가로스크롤 대상
 
   // 각 장르별 현재 "왼쪽 포스터 인덱스" (페이지 단위 이동)
   const [leftPosterIndex, setLeftPosterIndex] = useState({});
@@ -229,6 +230,27 @@ function Home() {
     }
   };
 
+  // 마우스 휠 사용시 가로스크롤 작동
+  useEffect(() => {
+    if (!menuEl) return; // menuEl이 아직 설정되지 않았다면 종료
+
+    const handleWheel = (e) => {
+      e.preventDefault(); // 기본 스크롤 방지
+      // 가로 스크롤
+      menuEl.scrollBy({
+        left: e.deltaY, // 수직 스크롤 양만큼 수평 스크롤
+        behavior: "smooth",
+      });
+    };
+
+    // passive: false 옵션을 주어 브라우저가 이벤트의 preventDefault 호출을 인지
+    menuEl.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      menuEl.removeEventListener("wheel", handleWheel);
+    };
+  }, [menuEl]); // menuEl이 변경될 때마다 실행
+
   return (
     <div className={styles.homePagecontainer}>
       {loading ? (
@@ -237,7 +259,7 @@ function Home() {
         <div>
           <div className={styles.filterContainer}>
             {/* 장르 버튼 */}
-            <ul className={styles.genreMenu}>
+            <ul ref={setMenuEl} className={styles.genreMenu}>
               {genre_list.map((genres_category) => (
                 <li key={genres_category}>
                   <button
