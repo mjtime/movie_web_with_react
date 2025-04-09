@@ -251,6 +251,51 @@ function Home() {
     };
   }, [menuEl]); // menuEl이 변경될 때마다 실행
 
+  // 마우스 드래그(클릭)로 가로스크롤 작동
+  useEffect(() => {
+    if (!menuEl) return;
+
+    let isDown = false; // 드래그 상태
+    let startX;
+    let scrollLeft;
+
+    const mouseDownHandler = (e) => {
+      isDown = true;
+      // 드래그 시작 위치를 저장
+      startX = e.pageX - menuEl.offsetLeft;
+      scrollLeft = menuEl.scrollLeft;
+    };
+
+    const mouseLeaveHandler = () => {
+      isDown = false;
+    };
+
+    const mouseUpHandler = () => {
+      isDown = false;
+    };
+
+    const mouseMoveHandler = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      // 현재 마우스 위치와 시작 위치의 차이를 계산
+      const x = e.pageX - menuEl.offsetLeft;
+      const walk = (x - startX) * 1; // 스크롤 속도 조절
+      menuEl.scrollLeft = scrollLeft - walk;
+    };
+
+    menuEl.addEventListener("mousedown", mouseDownHandler);
+    menuEl.addEventListener("mouseleave", mouseLeaveHandler);
+    menuEl.addEventListener("mouseup", mouseUpHandler);
+    menuEl.addEventListener("mousemove", mouseMoveHandler);
+
+    return () => {
+      menuEl.removeEventListener("mousedown", mouseDownHandler);
+      menuEl.removeEventListener("mouseleave", mouseLeaveHandler);
+      menuEl.removeEventListener("mouseup", mouseUpHandler);
+      menuEl.removeEventListener("mousemove", mouseMoveHandler);
+    };
+  }, [menuEl]);
+
   return (
     <div className={styles.homePagecontainer}>
       {loading ? (

@@ -23,6 +23,10 @@
   list-style: none;
   gap: 10px;
   overflow-x: auto; /* 가로 스크롤 */
+  cursor: grab; /* 마우스 올렸을 때 스타일 - 스크롤 가능 표시 */
+}
+.genreMenu:active {
+  cursor: grabbing; /* 마우스 눌렀을 때 스타일 */
 }
 .genreMenu::-webkit-scrollbar {
   height: 2px; /* 스크롤바 너비 */
@@ -43,6 +47,7 @@
   border-radius: 10px;
   cursor: pointer;
   white-space: nowrap; /* 줄바꿈 방지 */
+  user-select: none; /* 텍스트 선택 방지 */
 }
 
 .genreMenu button.selectedGenre {
