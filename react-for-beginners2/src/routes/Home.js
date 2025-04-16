@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Movie from "../components/Movie";
 import SlideShow from "../components/SlideShow";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Home.module.css";
+import useWindowSize from "../hooks/useWindowSize";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -14,6 +16,18 @@ function Home() {
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드쇼 영화 정보
   const [selectedGenre, setSelectedGenre] = useState("All"); // 선택된 장르 상태 추가
   const [menuEl, setMenuEl] = useState(null); // 장르 메뉴 가로스크롤 대상
+  const [isGenreMenuOpen, setIsGenreMenuOpen] = useState(false); // 장르 메뉴 열림 상태
+  const [genreDropdownStyle, setGenreDropdownStyle] = useState({}); // 장르 메뉴 드롭다운 위치 설정
+  const genreMenuContainerRef = useRef(null);
+  const windowSize = useWindowSize(); // 커스텀 훅을 통해 창 크기 정보 가져오기
+
+  // 두 ref를 모두 업데이트하는 콜백 함수
+  const genreMenuRef = (element) => {
+    // useRef로 관리하는 값 업데이트
+    genreMenuContainerRef.current = element;
+    // useState를 통해 저장할 경우 업데이트
+    setMenuEl(element);
+  };
 
   // 각 장르별 현재 "왼쪽 포스터 인덱스" (페이지 단위 이동)
   const [leftPosterIndex, setLeftPosterIndex] = useState({});
@@ -296,6 +310,25 @@ function Home() {
     };
   }, [menuEl]);
 
+  // 드롭다운 메뉴 위치 업데이트, genreMenuContainerRef 위치에 따라 변경
+  useEffect(() => {
+    if (genreMenuContainerRef.current) {
+      const rect = genreMenuContainerRef.current.getBoundingClientRect();
+      setGenreDropdownStyle({
+        position: "absolute",
+        top: rect.top + "px",
+        left: rect.left + "px",
+        width: rect.width + "px",
+        zIndex: 1000,
+      });
+    }
+  }, [isGenreMenuOpen, windowSize]); // 장르 메뉴 열림 상태가 변경될 때마다 위치 업데이트
+
+  // 장르 메뉴 열기/닫기
+  const toggleDropdown = () => {
+    setIsGenreMenuOpen((prev) => !prev);
+  };
+
   return (
     <div className={styles.homePagecontainer}>
       {loading ? (
@@ -303,24 +336,56 @@ function Home() {
       ) : (
         <div>
           <div className={styles.filterContainer}>
-            {/* 장르 버튼 */}
-            <ul ref={setMenuEl} className={styles.genreMenu}>
-              {genre_list.map((genres_category) => (
-                <li key={genres_category}>
-                  <button
-                    onClick={() => handleGenreChange(genres_category)}
-                    className={
-                      selectedGenre === genres_category
-                        ? styles.selectedGenre
-                        : ""
-                    }
-                  >
-                    {genres_category}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className={styles.menuContainer}>
+              <button
+                className={styles.genre_toggle_btn}
+                onClick={toggleDropdown}
+              >
+                +
+              </button>
+              {/* 장르 버튼 */}
+              <ul ref={genreMenuRef} className={styles.genreMenu}>
+                {genre_list.map((genres_category) => (
+                  <li key={genres_category}>
+                    <button
+                      onClick={() => handleGenreChange(genres_category)}
+                      className={
+                        selectedGenre === genres_category
+                          ? styles.selectedGenre
+                          : ""
+                      }
+                    >
+                      {genres_category}
+                    </button>
+                  </li>
+                ))}
+              </ul>
 
+              {/* Portal을 이용해 드롭다운 메뉴 렌더링 */}
+              {isGenreMenuOpen &&
+                createPortal(
+                  <div
+                    className={styles.dropdownGenresMenu}
+                    style={genreDropdownStyle}
+                  >
+                    {genre_list.map((genre) => (
+                      <button
+                        key={genre}
+                        onClick={() => {
+                          handleGenreChange(genre);
+                          setIsGenreMenuOpen(false);
+                        }}
+                        className={
+                          selectedGenre === genre ? styles.selectedGenre : ""
+                        }
+                      >
+                        {genre}
+                      </button>
+                    ))}
+                  </div>,
+                  document.body
+                )}
+            </div>
             {/* 제목 검색창 */}
             <form
               onSubmit={(e) => e.preventDefault()}

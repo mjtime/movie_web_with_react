@@ -15,6 +15,14 @@
 /* 메뉴 - 장르 */
 .filterContainer {
   display: flex;
+  width: 100%;
+}
+
+.menuContainer {
+  flex: 3;
+  display: flex;
+  position: relative;
+  overflow: hidden;
 }
 .genreMenu {
   padding: 10px 0;
@@ -53,6 +61,11 @@
 .genreMenu button.selectedGenre {
   background-color: white;
   color: black;
+}
+
+/* 장르 - 드롭다운 메뉴 */
+.dropdownGenresMenu {
+  background-color: aqua; /* 드롭다운 확인용 배경색 */
 }
 
 /* 검색창 */
