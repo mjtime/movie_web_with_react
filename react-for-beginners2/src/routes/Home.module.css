@@ -34,7 +34,7 @@
   cursor: grab; /* 마우스 올렸을 때 스타일 - 스크롤 가능 표시 */
 }
 .genreMenu:active {
-  cursor: grabbing; /* 마우스 눌렀을 때 스타일 */
+  cursor: grabbing; /* 메뉴 스크롤시 클릭할때 커서 스타일 */
 }
 .genreMenu::-webkit-scrollbar {
   height: 2px; /* 스크롤바 너비 */
@@ -47,7 +47,8 @@
   background-color: rgb(77, 77, 77); /* 스크롤바 배경 색상 */
 }
 
-.genreMenu button {
+.genreMenu button,
+.dropdownGenresMenu button {
   background-color: transparent;
   color: white;
   padding: 4px 8px;
@@ -58,14 +59,43 @@
   user-select: none; /* 텍스트 선택 방지 */
 }
 
-.genreMenu button.selectedGenre {
+.genreMenu button.selectedGenre,
+.dropdownGenresMenu button.selectedGenre {
   background-color: white;
   color: black;
 }
 
-/* 장르 - 드롭다운 메뉴 */
+/* 드롭다운 메뉴 */
 .dropdownGenresMenu {
-  background-color: aqua; /* 드롭다운 확인용 배경색 */
+  position: absolute;
+  background-color: rgb(46, 46, 46); /* 배경색 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  display: flex; /* 버튼들을 한 줄에 배치 */
+  flex-wrap: wrap; /* 버튼이 넘칠 경우 다음 줄로 이동 */
+  gap: 10px; /* 버튼 간 간격 */
+  width: 100%; /* 부모 요소의 너비에 맞춤 */
+  max-height: 0; /* 초기 높이 0으로 설정 */
+  overflow: hidden; /* 넘치는 콘텐츠 숨김 */
+  transition: max-height 0.3s ease, padding 0.3s ease; /* 부드러운 열림/닫힘 애니메이션 */
+  padding: 0; /* 닫힌 상태에서는 내부 여백 제거 */
+}
+
+/* 드롭다운 메뉴가 열릴 때 */
+.dropdownGenresMenu.open {
+  max-height: 100vh; /* 열릴 때 최대 높이 설정 (필요에 따라 조정) */
+  padding: 10px; /* 열릴 때만 내부 여백 추가 */
+}
+
+/* 드롭다운 메뉴 버튼 */
+.dropdownGenresMenu button {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdownGenresMenu button:hover,
+.genreMenu button:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #f5d300;
+  border-color: #f5d300;
 }
 
 /* 검색창 */

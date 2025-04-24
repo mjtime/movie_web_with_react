@@ -362,29 +362,30 @@ function Home() {
               </ul>
 
               {/* Portal을 이용해 드롭다운 메뉴 렌더링 */}
-              {isGenreMenuOpen &&
-                createPortal(
-                  <div
-                    className={styles.dropdownGenresMenu}
-                    style={genreDropdownStyle}
-                  >
-                    {genre_list.map((genre) => (
-                      <button
-                        key={genre}
-                        onClick={() => {
-                          handleGenreChange(genre);
-                          setIsGenreMenuOpen(false);
-                        }}
-                        className={
-                          selectedGenre === genre ? styles.selectedGenre : ""
-                        }
-                      >
-                        {genre}
-                      </button>
-                    ))}
-                  </div>,
-                  document.body
-                )}
+              {createPortal(
+                <div
+                  className={`${styles.dropdownGenresMenu} ${
+                    isGenreMenuOpen ? styles.open : ""
+                  }`}
+                  style={genreDropdownStyle}
+                >
+                  {genre_list.map((genre) => (
+                    <button
+                      key={genre}
+                      onClick={() => {
+                        handleGenreChange(genre);
+                        setIsGenreMenuOpen(false);
+                      }}
+                      className={
+                        selectedGenre === genre ? styles.selectedGenre : ""
+                      }
+                    >
+                      {genre}
+                    </button>
+                  ))}
+                </div>,
+                document.body
+              )}
             </div>
             {/* 제목 검색창 */}
             <form
