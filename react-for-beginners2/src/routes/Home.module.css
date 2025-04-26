@@ -47,6 +47,13 @@
   background-color: rgb(77, 77, 77); /* 스크롤바 배경 색상 */
 }
 
+.genre_toggle_btn {
+  margin-bottom: 16px;
+  color: white;
+  background-color: transparent;
+  border: none;
+}
+
 .genreMenu button,
 .dropdownGenresMenu button {
   background-color: transparent;
