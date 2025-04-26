@@ -20,6 +20,9 @@ function Home() {
   const [genreDropdownStyle, setGenreDropdownStyle] = useState({}); // 장르 메뉴 드롭다운 위치 설정
   const genreMenuContainerRef = useRef(null);
   const windowSize = useWindowSize(); // 커스텀 훅을 통해 창 크기 정보 가져오기
+  const [isMouseOverGenreMenuBtn, setIsMouseOverGenreMenuBtn] = useState(false); // 장르 드롭다운 버튼 마우스 오버 상태
+  const [isMouseOverGenreDropdown, setIsMouseOverGenreDropdown] =
+    useState(false); // 장르 드롭다운 창 마우스 오버 상태
 
   // 두 ref를 모두 업데이트하는 콜백 함수
   const genreMenuRef = (element) => {
@@ -325,9 +328,14 @@ function Home() {
   }, [isGenreMenuOpen, windowSize]); // 장르 메뉴 열림 상태가 변경될 때마다 위치 업데이트
 
   // 장르 메뉴 열기/닫기
-  const toggleDropdown = () => {
-    setIsGenreMenuOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    // 드롭다운 버튼 또는 창에 마우스가 올려진 경우 드롭다운 열기
+    if (isMouseOverGenreMenuBtn || isMouseOverGenreDropdown) {
+      setIsGenreMenuOpen(true);
+    } else {
+      setIsGenreMenuOpen(false);
+    }
+  }, [isMouseOverGenreMenuBtn, isMouseOverGenreDropdown]);
 
   return (
     <div className={styles.homePagecontainer}>
@@ -339,7 +347,8 @@ function Home() {
             <div className={styles.menuContainer}>
               <button
                 className={styles.genre_toggle_btn}
-                onClick={toggleDropdown}
+                onMouseEnter={() => setIsMouseOverGenreMenuBtn(true)}
+                onMouseLeave={() => setIsMouseOverGenreMenuBtn(false)}
               >
                 +
               </button>
@@ -368,6 +377,8 @@ function Home() {
                     isGenreMenuOpen ? styles.open : ""
                   }`}
                   style={genreDropdownStyle}
+                  onMouseEnter={() => setIsMouseOverGenreDropdown(true)}
+                  onMouseLeave={() => setIsMouseOverGenreDropdown(false)}
                 >
                   {genre_list.map((genre) => (
                     <button
