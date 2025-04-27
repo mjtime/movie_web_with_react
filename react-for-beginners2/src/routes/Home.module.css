@@ -16,6 +16,7 @@
 .filterContainer {
   display: flex;
   width: 100%;
+  gap: 10px;
 }
 
 .menuContainer {
@@ -108,7 +109,7 @@
 /* 검색창 */
 .searchContainer {
   position: relative;
-  margin: 0 3px;
+  margin: 0 3px 5px 3px;
   display: flex;
   align-items: center;
 }
@@ -125,7 +126,6 @@
   outline: none;
   border-width: 0;
   color: white;
-  border-bottom: white 1px solid;
   background-color: transparent;
   padding-left: 30px; /* 왼쪽에 검색 아이콘 공간 확보 */
   padding-right: 40px; /* X 버튼 공간 확보 */
