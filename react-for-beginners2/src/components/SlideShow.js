@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function SlideShow({ movies }) {
   const [currentSlide, setCurrentSlide] = useState(1); // 슬라이드 인덱스 (중앙부터 시작)
@@ -150,5 +151,18 @@ function SlideShow({ movies }) {
     </div>
   );
 }
+
+SlideShow.propTypes = {
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      medium_cover_image: PropTypes.string.isRequired,
+      background_image: PropTypes.string.isRequired,
+      summary: PropTypes.string,
+      rating: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+};
 
 export default SlideShow;
