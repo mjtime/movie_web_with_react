@@ -1,0 +1,47 @@
+.slideshowContainer {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.slidesTrack {
+  display: flex;
+}
+
+.slidesTrack.animate {
+  transition: transform 0.5s ease-in-out;
+}
+
+.slideBackground {
+  min-width: 100%;
+  height: 400px;
+  display: flex;
+  background-size: cover;
+  background-position: center;
+}
+
+.movieInfo {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+}
+
+.movieCoverContainer {
+  width: 280px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.movieCoverImage {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}

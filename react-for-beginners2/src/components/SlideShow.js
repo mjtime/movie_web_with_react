@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import styles from "./SlideShow.module.css"; // CSS 모듈을 사용하여 스타일링
 
 function SlideShow({ movies }) {
   const [currentSlide, setCurrentSlide] = useState(1); // 슬라이드 인덱스 (중앙부터 시작)
@@ -75,45 +76,23 @@ function SlideShow({ movies }) {
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        height: "400px",
-        overflow: "hidden",
-      }}
-    >
+    <div className={styles.slideshowContainer}>
       <div
+        className={
+          `${styles.slidesTrack} ` + (transitioning ? styles.animate : "")
+        }
         style={{
-          display: "flex",
           transform: `translateX(${-currentSlide * 100}%)`,
-          transition: transitioning ? "transform 0.5s ease-in-out" : "none",
         }}
         onTransitionEnd={handleTransitionEnd}
       >
         {slides.map((movie, index) => (
           <div
+            className={styles.slideBackground}
             key={index}
-            style={{
-              minWidth: "100%",
-              height: "400px",
-              backgroundImage: `url(${movie.background_image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              display: "flex",
-            }}
+            style={{ backgroundImage: `url(${movie.background_image})` }}
           >
-            <div
-              style={{
-                flex: 1, // 좌측에 영화 정보가 차지하는 영역
-                backgroundColor: "rgba(0,0,0,0.5)",
-                padding: "20px",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                color: "white",
-              }}
-            >
+            <div className={styles.movieInfo} style={{}}>
               <p>{movie.rating}</p>
               <h2>{movie.title}</h2>
               <span>
@@ -127,22 +106,11 @@ function SlideShow({ movies }) {
                 <Link to={`/movie/${movie.id}`}>상세보기</Link>
               </button>
             </div>
-            <div
-              style={{
-                width: "280px", // 이미지 영역의 크기 조정
-                height: "100%",
-                display: "flex",
-                justifyContent: "flex-end", // 이미지를 우측에 정렬
-                alignItems: "center",
-              }}
-            >
+            <div className={styles.movieCoverContainer}>
               <img
+                className={styles.movieCoverImage}
                 src={movie.medium_cover_image}
-                style={{
-                  objectFit: "cover",
-                  width: "100%",
-                  height: "auto",
-                }}
+                alt={movie.title}
               />
             </div>
           </div>
