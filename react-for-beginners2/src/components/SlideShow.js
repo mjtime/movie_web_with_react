@@ -17,6 +17,7 @@ function SlideShow({ movies }) {
 
   // 슬라이드 자동 진행
   useEffect(() => {
+    // 슬라이드쇼 멈추려면 주석처리
     startAutoSlide();
 
     // visibilitychange 이벤트 추가
@@ -93,18 +94,18 @@ function SlideShow({ movies }) {
             style={{ backgroundImage: `url(${movie.background_image})` }}
           >
             <div className={styles.movieInfo} style={{}}>
-              <p>{movie.rating}</p>
-              <h2>{movie.title}</h2>
-              <span>
+              <h2 className={styles.movieTitle}>{movie.title}</h2>
+              <p>⭐{movie.rating}</p>
+              <span className={styles.movieSummary}>
                 {movie.summary
                   ? movie.summary.length > 100
                     ? `${movie.summary.slice(0, 100)}...` // 글자수 출력 길이 조절
                     : movie.summary
                   : ""}
               </span>
-              <button>
-                <Link to={`/movie/${movie.id}`}>상세보기</Link>
-              </button>
+              <Link className={styles.detailButton} to={`/movie/${movie.id}`}>
+                상세보기
+              </Link>
             </div>
             <div className={styles.movieCoverContainer}>
               <img
