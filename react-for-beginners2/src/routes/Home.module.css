@@ -12,6 +12,32 @@
   gap: 2px; /* 아이템 간 간격 */
 }
 
+.genreListContainre {
+  margin: 35px 0;
+}
+.genreListHeader {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 16px;
+  padding: 0 20px;
+}
+.genreListTitle {
+  color: white;
+  margin: 0;
+}
+
+.pageDots {
+  /* 수평 중앙에 배치 */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 /* 메뉴 - 장르 */
 .filterContainer {
   display: flex;

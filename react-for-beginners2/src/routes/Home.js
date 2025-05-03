@@ -481,34 +481,28 @@ function Home() {
               const pageIndex = Math.floor(currentIndex / moviesPerPage);
 
               return (
-                <div key={genre}>
-                  <h2>{genre}</h2>
+                <div className={styles.genreListContainre} key={genre}>
+                  <div className={styles.genreListHeader}>
+                    <h2 className={styles.genreListTitle}>{genre}</h2>
 
-                  {/* 페이지 도트 */}
-                  <ul
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: "10px",
-                      listStyle: "none",
-                      padding: 0,
-                    }}
-                  >
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                      <li
-                        key={index}
-                        style={{
-                          width: "10px",
-                          height: "10px",
-                          margin: "5px",
-                          borderRadius: "50%",
-                          backgroundColor:
-                            index === pageIndex ? "orange" : "#555",
-                          transition: "background-color 0.3s",
-                        }}
-                      />
-                    ))}
-                  </ul>
+                    {/* 페이지 도트 */}
+                    <ul className={styles.pageDots}>
+                      {Array.from({ length: totalPages }).map((_, index) => (
+                        <li
+                          key={index}
+                          style={{
+                            width: "10px",
+                            height: "10px",
+                            margin: "5px",
+                            borderRadius: "50%",
+                            backgroundColor:
+                              index === pageIndex ? "orange" : "#555",
+                            transition: "background-color 0.3s",
+                          }}
+                        />
+                      ))}
+                    </ul>
+                  </div>
 
                   <div className={styles.scrollContainer}>
                     {/* 스크롤 슬라이드 영역 */}
