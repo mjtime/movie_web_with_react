@@ -92,6 +92,8 @@ function SlideShow({ movies }) {
             className={styles.slideBackground}
             key={index}
             style={{ backgroundImage: `url(${movie.background_image})` }}
+            onMouseEnter={stopAutoSlide}
+            onMouseLeave={startAutoSlide}
           >
             <div className={styles.movieInfo} style={{}}>
               <h2 className={styles.movieTitle}>{movie.title}</h2>
