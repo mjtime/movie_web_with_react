@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import Movie from "../components/Movie";
-import SlideShow from "../components/SlideShow";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Home.module.css";
-import useWindowSize from "../hooks/useWindowSize";
+import Movie from "components/Movie/Movie";
+import SlideShow from "components/SlideShow/SlideShow";
+import useWindowSize from "hooks/useWindowSize";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태

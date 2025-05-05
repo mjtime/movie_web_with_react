@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Movie.module.css";
-import NoPoster from "./NoPoster";
+import NoPoster from "components/NoPoster/NoPoster";
 
 function Movie({ id, coverImg, title, summary, genres }) {
   // 장르가 존재하지 않으면 빈배열로 초기화

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./Detail.module.css";
-import NoPoster from "../components/NoPoster";
+import NoPoster from "components/NoPoster/NoPoster";
 
 function Detail() {
   const { id } = useParams();
