@@ -78,47 +78,51 @@ function SlideShow({ movies }) {
 
   return (
     <div className={styles.slideshowContainer}>
-      <div
-        className={
-          `${styles.slidesTrack} ` + (transitioning ? styles.animate : "")
-        }
-        style={{
-          transform: `translateX(${-currentSlide * 100}%)`,
-        }}
-        onTransitionEnd={handleTransitionEnd}
-      >
-        {slides.map((movie, index) => (
-          <div
-            className={styles.slideBackground}
-            key={index}
-            style={{ backgroundImage: `url(${movie.background_image})` }}
-            onMouseEnter={stopAutoSlide}
-            onMouseLeave={startAutoSlide}
-          >
-            <div className={styles.movieInfo} style={{}}>
-              <h2 className={styles.movieTitle}>{movie.title}</h2>
-              <p>⭐{movie.rating}</p>
-              <span className={styles.movieSummary}>
-                {movie.summary
-                  ? movie.summary.length > 100
-                    ? `${movie.summary.slice(0, 100)}...` // 글자수 출력 길이 조절
-                    : movie.summary
-                  : ""}
-              </span>
-              <Link className={styles.detailButton} to={`/movie/${movie.id}`}>
-                상세보기
-              </Link>
+      {!movies || movies.length === 0 ? (
+        <div>Loading slides…</div>
+      ) : (
+        <div
+          className={
+            `${styles.slidesTrack} ` + (transitioning ? styles.animate : "")
+          }
+          style={{
+            transform: `translateX(${-currentSlide * 100}%)`,
+          }}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {slides.map((movie, index) => (
+            <div
+              className={styles.slideBackground}
+              key={index}
+              style={{ backgroundImage: `url(${movie.background_image})` }}
+              onMouseEnter={stopAutoSlide}
+              onMouseLeave={startAutoSlide}
+            >
+              <div className={styles.movieInfo} style={{}}>
+                <h2 className={styles.movieTitle}>{movie.title}</h2>
+                <p>⭐{movie.rating}</p>
+                <span className={styles.movieSummary}>
+                  {movie.summary
+                    ? movie.summary.length > 100
+                      ? `${movie.summary.slice(0, 100)}...` // 글자수 출력 길이 조절
+                      : movie.summary
+                    : ""}
+                </span>
+                <Link className={styles.detailButton} to={`/movie/${movie.id}`}>
+                  상세보기
+                </Link>
+              </div>
+              <div className={styles.movieCoverContainer}>
+                <img
+                  className={styles.movieCoverImage}
+                  src={movie.medium_cover_image}
+                  alt={movie.title}
+                />
+              </div>
             </div>
-            <div className={styles.movieCoverContainer}>
-              <img
-                className={styles.movieCoverImage}
-                src={movie.medium_cover_image}
-                alt={movie.title}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
