@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styles from "./SlideShow.module.css"; // CSS 모듈을 사용하여 스타일링
 
-function SlideShow({ movies }) {
+function SlideShow({ movies = [] }) {
   const [currentSlide, setCurrentSlide] = useState(1); // 슬라이드 인덱스 (중앙부터 시작)
   const [transitioning, setTransitioning] = useState(false); // 애니메이션 상태
   const intervalId = useRef(null);
