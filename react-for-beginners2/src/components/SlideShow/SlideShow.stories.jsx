@@ -6,13 +6,7 @@ import SlideShow from "./SlideShow";
 export default {
   title: "Components/SlideShow",
   component: SlideShow,
-  decorators: [
-    (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    ),
-  ],
+  decorators: [(storyFn) => <MemoryRouter>{storyFn()}</MemoryRouter>],
 };
 
 // Default 스토리
