@@ -5,6 +5,7 @@ import styles from "./Home.module.css";
 import Movie from "components/Movie/Movie";
 import SlideShow from "components/SlideShow/SlideShow";
 import useWindowSize from "hooks/useWindowSize";
+import { GENRE_LIST } from "contents/genres";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -53,35 +54,7 @@ function Home() {
   const [hoveredGenre, setHoveredGenre] = useState(null);
 
   // 장르 목록 (하드코딩)
-  const genre_list = [
-    "All",
-    "Action",
-    "Adventure",
-    "Animation",
-    "Biography",
-    "Comedy",
-    "Crime",
-    "Documentary",
-    "Drama",
-    "Family",
-    "Fantasy",
-    "Film-Noir",
-    "Game-Show",
-    "History",
-    "Horror",
-    "Music",
-    "Musical",
-    "Mystery",
-    "Reality-TV",
-    "Romance",
-    "Sci-Fi",
-    "Seasonal",
-    "Sport",
-    "Talk-Show",
-    "Thriller",
-    "War",
-    "Western",
-  ];
+  const genre_list = GENRE_LIST;
 
   // 영화 데이터 요청 (장르별)
   const getMovieByGenres = async () => {
