@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { useSearchParams } from "react-router-dom";
 import styles from "./Home.module.css";
 import Movie from "components/Movie/Movie";
 import SlideShow from "components/SlideShow/SlideShow";
 import useWindowSize from "hooks/useWindowSize";
 import { GENRE_LIST } from "contents/genres";
+import GenreMenu from "components/GenreMenu/GenreMenu";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -16,22 +16,7 @@ function Home() {
   const searchInputRef = useRef(null); // 검색창 연결
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드쇼 영화 정보
   const [selectedGenre, setSelectedGenre] = useState("All"); // 선택된 장르 상태 추가
-  const [menuEl, setMenuEl] = useState(null); // 장르 메뉴 가로스크롤 대상
-  const [isGenreMenuOpen, setIsGenreMenuOpen] = useState(false); // 장르 메뉴 열림 상태
-  const [genreDropdownStyle, setGenreDropdownStyle] = useState({}); // 장르 메뉴 드롭다운 위치 설정
-  const genreMenuContainerRef = useRef(null);
   const windowSize = useWindowSize(); // 커스텀 훅을 통해 창 크기 정보 가져오기
-  const [isMouseOverGenreMenuBtn, setIsMouseOverGenreMenuBtn] = useState(false); // 장르 드롭다운 버튼 마우스 오버 상태
-  const [isMouseOverGenreDropdown, setIsMouseOverGenreDropdown] =
-    useState(false); // 장르 드롭다운 창 마우스 오버 상태
-
-  // 두 ref를 모두 업데이트하는 콜백 함수
-  const genreMenuRef = (element) => {
-    // useRef로 관리하는 값 업데이트
-    genreMenuContainerRef.current = element;
-    // useState를 통해 저장할 경우 업데이트
-    setMenuEl(element);
-  };
 
   // 각 장르별 현재 "왼쪽 포스터 인덱스" (페이지 단위 이동)
   const [leftPosterIndex, setLeftPosterIndex] = useState({});
@@ -52,9 +37,6 @@ function Home() {
 
   // 마우스 오버된 장르 저장 (슬라이드에 버튼 노출 제어)
   const [hoveredGenre, setHoveredGenre] = useState(null);
-
-  // 장르 목록 (하드코딩)
-  const genre_list = GENRE_LIST;
 
   // 영화 데이터 요청 (장르별)
   const getMovieByGenres = async () => {
@@ -95,25 +77,25 @@ function Home() {
     }
   };
 
-  // 검색 및 장르 필터링 영화 요청
-  const getFilteredMovies = async () => {
-    const url = new URL("https://yts.mx/api/v2/list_movies.json?");
-    const genre = searchParams.get("genre");
-    if (genre && genre !== "All") {
-      url.searchParams.set("genre", genre);
-    }
-    const query = searchParams.get("query_term");
-    if (query && query.length > 1) {
-      url.searchParams.set("query_term", query);
-    }
-
-    const response = await fetch(url.toString());
-    const json = await response.json();
-    setFilteredMovies(json.data.movies ? json.data.movies : []);
-  };
-
   // 검색/장르 파라미터 변화 시
   useEffect(() => {
+    // 검색 및 장르 필터링 영화 요청
+    const getFilteredMovies = async () => {
+      const url = new URL("https://yts.mx/api/v2/list_movies.json?");
+      const genre = searchParams.get("genre");
+      if (genre && genre !== "All") {
+        url.searchParams.set("genre", genre);
+      }
+      const query = searchParams.get("query_term");
+      if (query && query.length > 1) {
+        url.searchParams.set("query_term", query);
+      }
+
+      const response = await fetch(url.toString());
+      const json = await response.json();
+      setFilteredMovies(json.data.movies ? json.data.movies : []);
+    };
+
     const genre = searchParams.get("genre");
     const query = searchParams.get("query_term");
 
@@ -220,95 +202,10 @@ function Home() {
     }
   };
 
-  // 마우스 휠 사용시 가로스크롤 작동
   useEffect(() => {
-    if (!menuEl) return; // menuEl이 아직 설정되지 않았다면 종료
-
-    const handleWheel = (e) => {
-      e.preventDefault(); // 기본 스크롤 방지
-      // 가로 스크롤
-      menuEl.scrollBy({
-        left: e.deltaY, // 수직 스크롤 양만큼 수평 스크롤
-        behavior: "smooth",
-      });
-    };
-
-    // passive: false 옵션을 주어 브라우저가 이벤트의 preventDefault 호출을 인지
-    menuEl.addEventListener("wheel", handleWheel, { passive: false });
-
-    return () => {
-      menuEl.removeEventListener("wheel", handleWheel);
-    };
-  }, [menuEl]); // menuEl이 변경될 때마다 실행
-
-  // 마우스 드래그(클릭)로 가로스크롤 작동
-  useEffect(() => {
-    if (!menuEl) return;
-
-    let isDown = false; // 드래그 상태
-    let startX;
-    let scrollLeft;
-
-    const mouseDownHandler = (e) => {
-      isDown = true;
-      // 드래그 시작 위치를 저장
-      startX = e.pageX - menuEl.offsetLeft;
-      scrollLeft = menuEl.scrollLeft;
-    };
-
-    const mouseLeaveHandler = () => {
-      isDown = false;
-    };
-
-    const mouseUpHandler = () => {
-      isDown = false;
-    };
-
-    const mouseMoveHandler = (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      // 현재 마우스 위치와 시작 위치의 차이를 계산
-      const x = e.pageX - menuEl.offsetLeft;
-      const walk = (x - startX) * 1; // 스크롤 속도 조절
-      menuEl.scrollLeft = scrollLeft - walk;
-    };
-
-    menuEl.addEventListener("mousedown", mouseDownHandler);
-    menuEl.addEventListener("mouseleave", mouseLeaveHandler);
-    menuEl.addEventListener("mouseup", mouseUpHandler);
-    menuEl.addEventListener("mousemove", mouseMoveHandler);
-
-    return () => {
-      menuEl.removeEventListener("mousedown", mouseDownHandler);
-      menuEl.removeEventListener("mouseleave", mouseLeaveHandler);
-      menuEl.removeEventListener("mouseup", mouseUpHandler);
-      menuEl.removeEventListener("mousemove", mouseMoveHandler);
-    };
-  }, [menuEl]);
-
-  // 드롭다운 메뉴 위치 업데이트, genreMenuContainerRef 위치에 따라 변경
-  useEffect(() => {
-    if (genreMenuContainerRef.current) {
-      const rect = genreMenuContainerRef.current.getBoundingClientRect();
-      setGenreDropdownStyle({
-        position: "absolute",
-        top: rect.top + "px",
-        left: rect.left + "px",
-        width: rect.width + "px",
-        zIndex: 1000,
-      });
-    }
-  }, [isGenreMenuOpen, windowSize]); // 장르 메뉴 열림 상태가 변경될 때마다 위치 업데이트
-
-  // 장르 메뉴 열기/닫기
-  useEffect(() => {
-    // 드롭다운 버튼 또는 창에 마우스가 올려진 경우 드롭다운 열기
-    if (isMouseOverGenreMenuBtn || isMouseOverGenreDropdown) {
-      setIsGenreMenuOpen(true);
-    } else {
-      setIsGenreMenuOpen(false);
-    }
-  }, [isMouseOverGenreMenuBtn, isMouseOverGenreDropdown]);
+    const genre = searchParams.get("genre") || "All";
+    setSelectedGenre(genre);
+  }, [searchParams]);
 
   return (
     <div className={styles.homePagecontainer}>
@@ -317,60 +214,11 @@ function Home() {
       ) : (
         <div>
           <div className={styles.filterContainer}>
-            <div className={styles.menuContainer}>
-              <button
-                className={styles.genre_toggle_btn}
-                onMouseEnter={() => setIsMouseOverGenreMenuBtn(true)}
-                onMouseLeave={() => setIsMouseOverGenreMenuBtn(false)}
-              >
-                +
-              </button>
-              {/* 장르 버튼 */}
-              <ul ref={genreMenuRef} className={styles.genreMenu}>
-                {genre_list.map((genres_category) => (
-                  <li key={genres_category}>
-                    <button
-                      onClick={() => handleGenreChange(genres_category)}
-                      className={
-                        selectedGenre === genres_category
-                          ? styles.selectedGenre
-                          : ""
-                      }
-                    >
-                      {genres_category}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Portal을 이용해 드롭다운 메뉴 렌더링 */}
-              {createPortal(
-                <div
-                  className={`${styles.dropdownGenresMenu} ${
-                    isGenreMenuOpen ? styles.open : ""
-                  }`}
-                  style={genreDropdownStyle}
-                  onMouseEnter={() => setIsMouseOverGenreDropdown(true)}
-                  onMouseLeave={() => setIsMouseOverGenreDropdown(false)}
-                >
-                  {genre_list.map((genre) => (
-                    <button
-                      key={genre}
-                      onClick={() => {
-                        handleGenreChange(genre);
-                        setIsGenreMenuOpen(false);
-                      }}
-                      className={
-                        selectedGenre === genre ? styles.selectedGenre : ""
-                      }
-                    >
-                      {genre}
-                    </button>
-                  ))}
-                </div>,
-                document.body
-              )}
-            </div>
+            <GenreMenu
+              genreList={GENRE_LIST}
+              selectedGenre={selectedGenre}
+              onSelectGenre={handleGenreChange}
+            />
             {/* 제목 검색창 */}
             <form
               onSubmit={(e) => e.preventDefault()}
