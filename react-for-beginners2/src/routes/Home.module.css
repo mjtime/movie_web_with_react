@@ -3,6 +3,8 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  /* 스크롤바가 없어도 gutter(여백)를 미리 확보 */
+  scrollbar-gutter: stable;
 }
 
 .gridContainer {
