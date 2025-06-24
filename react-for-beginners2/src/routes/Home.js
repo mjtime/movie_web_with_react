@@ -6,6 +6,7 @@ import SlideShow from "components/SlideShow/SlideShow";
 import useWindowSize from "hooks/useWindowSize";
 import { GENRE_LIST } from "contents/genres";
 import GenreMenu from "components/GenreMenu/GenreMenu";
+import SearchBar from "components/SearchBar/SearchBar";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -220,27 +221,12 @@ function Home() {
               onSelectGenre={handleGenreChange}
             />
             {/* 제목 검색창 */}
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className={styles.searchContainer}
-            >
-              <span className={styles.iconSearch}>🔍</span>
-              <input
-                type="text"
-                name="query_term"
-                placeholder="movie title"
-                defaultValue={searchParams.get("query_term") || ""}
-                onChange={(e) => handleSearch(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && e.preventDefault()} // 엔터키 입력 방지
-                ref={searchInputRef}
-                className={styles.searchInput}
-              />
-              {searchParams.get("query_term") && (
-                <button onClick={clearSearch} className={styles.clearButton}>
-                  X
-                </button>
-              )}
-            </form>
+            <SearchBar
+              searchTerm={searchParams.get("query_term") || ""}
+              onSearch={handleSearch}
+              onClear={clearSearch}
+              ref={searchInputRef}
+            />
           </div>
           {/* 슬라이드 쇼 */}
           {isFiltering ? null : <SlideShow movies={slideMovies} />}

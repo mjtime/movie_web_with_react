@@ -44,39 +44,3 @@
   width: 100%;
   gap: 10px;
 }
-
-/* 검색창 */
-.searchContainer {
-  position: relative;
-  margin: 0 3px 5px 3px;
-  display: flex;
-  align-items: center;
-}
-
-.iconSearch {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-}
-.searchInput {
-  padding: 8px;
-  font-size: 16px;
-  outline: none;
-  border-width: 0;
-  color: white;
-  background-color: transparent;
-  padding-left: 30px; /* 왼쪽에 검색 아이콘 공간 확보 */
-  padding-right: 40px; /* X 버튼 공간 확보 */
-}
-
-.clearButton {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-}
