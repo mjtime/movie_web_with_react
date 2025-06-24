@@ -1,5 +1,4 @@
 .menuContainer {
-  flex: 3;
   display: flex;
   position: relative;
   overflow: hidden;
