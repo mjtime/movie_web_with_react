@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import styles from "./SearchBar.module.css";
 
 function SearchBar({ searchTerm, onSearch, onClear }) {
