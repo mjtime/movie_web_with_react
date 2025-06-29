@@ -14,25 +14,24 @@ function Movie({ id, coverImg, title, summary, genres }) {
     : [];
   // 이미지 로딩 에러 상태
   const [imgError, setImgError] = useState(false);
-
+  const shouldShowImg = !coverImg || imgError;
   return (
     <Link to={`/movie/${id}`} className={styles.movieLink}>
       <div className={styles.movieContainer}>
-        {!imgError ? (
+        {shouldShowImg ? (
+          <NoPoster title={title} className={styles.movieImage} />
+        ) : (
           <img
             className={styles.movieImage}
             src={coverImg}
             alt={title}
             onError={() => setImgError(true)}
-            // 로딩된 이미지 너비 0이면 에러로 처리
             onLoad={(e) => {
               if (e.target.naturalWidth === 0) {
                 setImgError(true);
               }
             }}
           />
-        ) : (
-          <NoPoster title={title} />
         )}
 
         <div className={styles.overlay}>
@@ -52,10 +51,10 @@ function Movie({ id, coverImg, title, summary, genres }) {
 
 Movie.propTypes = {
   id: PropTypes.number.isRequired,
-  coverImg: PropTypes.string.isRequired,
+  coverImg: PropTypes.string,
   title: PropTypes.string.isRequired,
-  summary: PropTypes.string.isRequired,
-  genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+  summary: PropTypes.string,
+  genres: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Movie;
