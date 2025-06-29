@@ -18,6 +18,7 @@
   width: 100%;
   height: auto;
   object-fit: cover;
+  aspect-ratio: 2 / 3;
 }
 
 .overlay {
