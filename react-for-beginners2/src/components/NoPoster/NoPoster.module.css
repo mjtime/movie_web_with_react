@@ -6,5 +6,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+}
+.noImage span {
+  display: block;
+  width: 100%;
+  word-break: break-all;
+  white-space: normal;
+  text-align: center;
+  font-size: clamp(12px, 4vw, 24px);
+  line-height: 1.2;
 }
