@@ -9,3 +9,6 @@ export default {
 
 // 2) 이름 있는 export: 스토리
 export const Default = () => <NoPoster title="No Image Available" />;
+export const LongTitleWithoutSpaces = () => (
+  <NoPoster title="NoImageAvailableNoImageAvailableNoImageAvailableNoImageAvailableNoImageAvailableNoImageAvailableNoImageAvailable" />
+);
