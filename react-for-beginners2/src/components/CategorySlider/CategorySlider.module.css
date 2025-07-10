@@ -1,0 +1,113 @@
+.genreListContainer {
+  margin: 35px 0;
+}
+
+.genreListHeader {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 16px;
+  padding: 0 20px;
+}
+
+.genreListTitle {
+  color: white;
+  margin: 0;
+}
+
+.pageDots {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 6px;
+}
+
+.dot,
+.activeDot {
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+.dot {
+  background-color: gray;
+}
+.activeDot {
+  background-color: orange;
+}
+
+.scrollContainer {
+  overflow: hidden;
+}
+
+.innerContainer {
+  position: relative;
+  width: 100vw;
+  margin: 0 auto;
+}
+.sliderViewport {
+  width: var(--contentWidth-px);
+  margin-left: var(--preview-px);
+  margin-right: var(--preview-px);
+}
+
+.sliderTrack {
+  display: flex;
+  gap: var(--gap-px);
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(var(--offsetPx));
+}
+
+.movieContent {
+  flex: 0 0 var(--itemWidthPx-px);
+}
+
+.sideGradation {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--preview-px);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+.sideGradation.left {
+  left: 0;
+}
+.sideGradation.right {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
+}
+.sliderNavButton {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+  color: white;
+  z-index: 1;
+}
+
+/* Modifier: 이전 버튼 (왼쪽) */
+.sliderNavButton--prev {
+  left: 10px;
+}
+
+/* Modifier: 다음 버튼 (오른쪽) */
+.sliderNavButton--next {
+  right: 10px;
+}
+
+/* 가시성 제어용 클래스 */
+.sliderNavButtonVisible {
+  opacity: 1;
+}
