@@ -1,6 +1,10 @@
 import styles from "./SearchBar.module.css";
+import React, { forwardRef } from "react";
 
-function SearchBar({ searchTerm, onSearch, onClear }) {
+const SearchBar = forwardRef(function SearchBar(
+  { searchTerm, onSearch, onClear },
+  ref
+) {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
@@ -8,6 +12,7 @@ function SearchBar({ searchTerm, onSearch, onClear }) {
     >
       <span className={styles.iconSearch}>🔍</span>
       <input
+        ref={ref}
         type="text"
         name="query_term"
         placeholder="movie title"
@@ -23,5 +28,6 @@ function SearchBar({ searchTerm, onSearch, onClear }) {
       )}
     </form>
   );
-}
+});
+
 export default SearchBar;
