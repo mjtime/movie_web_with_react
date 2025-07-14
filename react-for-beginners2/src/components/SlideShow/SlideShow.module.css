@@ -41,17 +41,8 @@
 .movieCoverContainer {
   width: 280px;
   height: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
 }
 
-.movieCoverImage {
-  object-fit: cover;
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
 .movieSummary {
   /* 크롬, 사파리용*/
   display: -webkit-box;

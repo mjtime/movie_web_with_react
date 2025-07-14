@@ -2,13 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styles from "./SlideShow.module.css"; // CSS 모듈을 사용하여 스타일링
-import NoPoster from "components/NoPoster/NoPoster";
+import Movie from "components/Movie/Movie";
 
 function SlideShow({ movies = [] }) {
   const [currentSlide, setCurrentSlide] = useState(1); // 슬라이드 인덱스 (중앙부터 시작)
   const [transitioning, setTransitioning] = useState(false); // 애니메이션 상태
   const intervalId = useRef(null);
-  const [imgError, setImgError] = useState(false); // 이미지 로딩 에러 상태
 
   // 자연스러운 슬라이드 효과 적용을 위해 양쪽 끝에 복제
   const slides = [
@@ -115,25 +114,13 @@ function SlideShow({ movies = [] }) {
                 </Link>
               </div>
               <div className={styles.movieCoverContainer}>
-                {!imgError ? (
-                  <img
-                    className={styles.movieCoverImage}
-                    src={movie.medium_cover_image}
-                    alt={movie.title}
-                    onError={() => setImgError(true)}
-                    // 로딩된 이미지 너비 0이면 에러로 처리
-                    onLoad={(e) => {
-                      if (e.target.naturalWidth === 0) {
-                        setImgError(true);
-                      }
-                    }}
-                  />
-                ) : (
-                  <NoPoster
-                    className={styles.movieCoverImage}
-                    title={movie.title}
-                  />
-                )}
+                <Movie
+                  id={movie.id}
+                  coverImg={movie.medium_cover_image}
+                  title={movie.title}
+                  genres={movie.genres}
+                  showOverlay={false}
+                />
               </div>
             </div>
           ))}

@@ -8,7 +8,7 @@
   z-index: 0;
 }
 
-.movieContainer:hover {
+.hoverable:hover {
   /* 포스터와 오버레이 함께 확장*/
   transform: scale(1.1);
   z-index: 2; /* 다음 포스터에 가려지지 않게함*/
@@ -53,7 +53,12 @@
 }
 
 .overlayTitle {
-  font-size: 18px;
+  display: block;
+  width: 100%;
+  word-break: break-all;
+  white-space: normal;
+  text-align: center;
+  font-size: clamp(12px, 4vw, 24px);
   margin: 0;
 }
 

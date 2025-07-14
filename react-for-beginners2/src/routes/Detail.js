@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./Detail.module.css";
-import NoPoster from "components/NoPoster/NoPoster";
+import Movie from "components/Movie/Movie";
 
 function Detail() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [imgError, setImgError] = useState(false); // 포스터 이미지 로딩 상태
   const [isExpanded, setIsExpanded] = useState(false); // 줄거리 확장 여부
   const descriptionThreshold = 300; // 표시할 줄거리 길이
   const getMovie = async () => {
@@ -16,8 +15,6 @@ function Detail() {
 
     // 영화 정보 저장
     setMovie(json.data.movie);
-    console.log(json);
-    console.log(movie);
   };
 
   useEffect(() => {
@@ -48,8 +45,8 @@ function Detail() {
           <img
             className={styles.movieBackgroundImage}
             src={movie.background_image}
+            alt={`${movie.title} background`}
           />
-
           <div className={styles.detailWrapper}>
             <div className={styles.detailContent}>
               <div className={styles.detailHeader}>
@@ -71,25 +68,13 @@ function Detail() {
                   </div>
                 </div>
                 <div className={styles.moviePosterContainer}>
-                  {!imgError ? (
-                    <img
-                      className={styles.moviePosterImage}
-                      src={movie.medium_cover_image}
-                      alt={movie.title}
-                      onError={() => setImgError(true)}
-                      // 로딩된 이미지 너비 0이면 에러로 처리
-                      onLoad={(e) => {
-                        if (e.target.naturalWidth === 0) {
-                          setImgError(true);
-                        }
-                      }}
-                    />
-                  ) : (
-                    <NoPoster
-                      title={movie.title}
-                      className={styles.moviePosterImage}
-                    />
-                  )}
+                  <Movie
+                    id={movie.id}
+                    coverImg={movie.medium_cover_image}
+                    title={movie.title}
+                    genres={movie.genres}
+                    showOverlay={false}
+                  />
                 </div>
               </div>
               <div className={styles.detailMain}>

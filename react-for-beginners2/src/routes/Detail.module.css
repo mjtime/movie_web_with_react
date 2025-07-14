@@ -78,23 +78,10 @@ h1 {
 }
 
 .moviePosterContainer {
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 20%;
-  max-width: 200px;
-  min-width: 150px;
-  margin: 0 2%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* 상단 고정 */
+  width: clamp(135px, 20vw, 230px);
+  min-width: 120px;
+  margin-top: -10%;
 }
-.moviePosterImage {
-  width: 100%;
-  height: auto; /* 비율 유지 */
-  object-fit: contain; /* 이미지를 컨테이너 범위 안에 맞추기 */
-  margin-top: -50%; /* 이미지를 상단으로 이동 */
-}
-
 .movieInformation {
   flex-grow: 5;
   margin-right: 3%;
