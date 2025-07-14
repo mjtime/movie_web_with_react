@@ -41,10 +41,6 @@
   background-color: orange;
 }
 
-.scrollContainer {
-  overflow: hidden;
-}
-
 .innerContainer {
   position: relative;
   width: 100vw;
