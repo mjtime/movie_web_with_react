@@ -95,14 +95,15 @@ function CategorySlider({ genre, movies }) {
       <div className={styles.genreListHeader}>
         <h2 className={styles.genreListTitle}>{genre}</h2>
         {/* 페이지 표시용 */}
-        <ul className={styles.pageDots}>
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <li
-              key={i}
-              className={i === pageIndex ? styles.activeDot : styles.dot}
-            />
-          ))}
-        </ul>
+        <div className={styles.progressBarContainer}>
+          <div
+            className={styles.progressBarFill}
+            style={{
+              "--progressBarWidth": `${(moviesPerPage / movieLength) * 100}%`,
+              "--progressBarLeft": `${(leftPosterIndex / movieLength) * 100}%`,
+            }}
+          />
+        </div>
       </div>
 
       <div className={styles.scrollContainer}>

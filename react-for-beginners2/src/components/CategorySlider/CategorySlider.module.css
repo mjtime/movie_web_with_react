@@ -15,30 +15,24 @@
   margin: 0;
 }
 
-.pageDots {
+.progressBarContainer {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 6px;
+  left: 47%;
+  width: 10%;
+  height: 4px;
+  background-color: #363636;
+  margin-top: 8px;
+  border-radius: 2px;
 }
 
-.dot,
-.activeDot {
-  width: 10px;
-  height: 10px;
-  margin: 5px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-.dot {
-  background-color: gray;
-}
-.activeDot {
-  background-color: orange;
+.progressBarFill {
+  position: absolute;
+  width: var(--progressBarWidth);
+  left: var(--progressBarLeft);
+  height: 100%;
+  background-color: rgb(110, 72, 0); /* 원하는 강조 색상 */
+  transition: left 0.3s ease, width 0.3s ease;
+  border-radius: 2px;
 }
 
 .innerContainer {
