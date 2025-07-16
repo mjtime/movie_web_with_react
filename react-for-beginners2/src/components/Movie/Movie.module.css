@@ -44,8 +44,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 최소 5px, 3vw 비율, 최대 50px */
-  gap: clamp(5px, 3vw, 50px);
+  gap: clamp(5px, 2vw, 50px);
   color: #fff;
   text-align: center;
   padding: 10px;
@@ -57,7 +56,7 @@
   word-break: break-all;
   white-space: normal;
   text-align: center;
-  font-size: clamp(12px, 4vw, 24px);
+  font-size: clamp(12px, 2vw, 18px);
   margin: 0;
 }
 
@@ -65,5 +64,5 @@
   list-style: none;
   padding: 0;
   margin: 5px 0 0;
-  font-size: 14px;
+  font-size: clamp(10px, 2vw, 16px);
 }
