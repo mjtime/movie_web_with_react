@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styles from "./CategorySlider.module.css";
 import Movie from "components/Movie/Movie";
 
-function CategorySlider({ genre, movies }) {
+function CategorySlider({ genre, movies, movieIcon = "" }) {
   const PREVIEW_PX = 80; // 양쪽에 남길 고정 프리뷰 영역
   const GAP_PX = 2; // 포스터 사이의 간격
   const movieLength = movies.length;
@@ -104,6 +104,7 @@ function CategorySlider({ genre, movies }) {
             }}
           />
         </div>
+        <div className={styles.genreIcon}>{movieIcon}</div>
       </div>
 
       <div className={styles.scrollContainer}>

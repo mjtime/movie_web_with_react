@@ -35,6 +35,10 @@
   border-radius: 2px;
 }
 
+.genreIcon {
+  margin-left: auto;
+}
+
 .innerContainer {
   position: relative;
   width: 100vw;

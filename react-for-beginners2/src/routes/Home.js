@@ -8,6 +8,7 @@ import { GENRE_LIST } from "contents/genres";
 import GenreMenu from "components/GenreMenu/GenreMenu";
 import SearchBar from "components/SearchBar/SearchBar";
 import CategorySlider from "components/CategorySlider/CategorySlider";
+import genreConfigs from "contents/genreConfigs";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -20,25 +21,22 @@ function Home() {
   const [selectedGenre, setSelectedGenre] = useState("All"); // 선택된 장르 상태 추가
   const windowSize = useWindowSize(); // 커스텀 훅을 통해 창 크기 정보 가져오기
 
-  // 영화 데이터 요청 (장르별)
+  // 영화 데이터 요청 (장르별 메인화면 표시용)
   const getMovieByGenres = async () => {
     setLoading(true);
     const newMoviesByGenre = {};
     const url = new URL("https://yts.mx/api/v2/list_movies.json?");
 
-    for (const genre of [
-      "Action",
-      "Animation",
-      "Comedy",
-      "Drama",
-      "Reality-TV",
-    ]) {
-      url.searchParams.set("genre", genre);
+    for (const config of genreConfigs) {
+      url.searchParams.set("genre", config.genre);
       url.searchParams.set("limit", 18);
       const response = await fetch(url.toString());
       const json = await response.json();
 
-      newMoviesByGenre[genre] = json.data.movies ? json.data.movies : [];
+      newMoviesByGenre[config.genre] = {
+        movies: json.data.movies || [],
+        icon: config.icon,
+      };
     }
 
     setMoviesByGenre(newMoviesByGenre);
@@ -181,11 +179,18 @@ function Home() {
               )}
             </div>
           ) : (
-            Object.entries(moviesByGenre).map(([genre, movies]) => {
-              return (
-                <CategorySlider key={genre} genre={genre} movies={movies} />
-              );
-            })
+            <div className={styles.sliderListContainer}>
+              {Object.entries(moviesByGenre).map(
+                ([genre, { movies, icon }]) => (
+                  <CategorySlider
+                    key={genre}
+                    genre={genre}
+                    movies={movies}
+                    movieIcon={icon}
+                  />
+                )
+              )}
+            </div>
           )}
         </div>
       )}
