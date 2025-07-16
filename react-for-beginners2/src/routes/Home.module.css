@@ -46,3 +46,10 @@
   width: 100%;
   gap: 10px;
 }
+
+.sliderListContainer {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px; /* 원하는 여백(px, rem 등) */
+}
