@@ -14,6 +14,21 @@
   gap: 2px; /* 아이템 간 간격 */
 }
 
+.gridContainer > p {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+
+  /* 가운데 정렬용 스타일 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%;
+  grid-column: 1 / -1; /* p를 전체 그리드 열 너비에 걸치게 함 */
+}
+
 /* 장르메뉴 & 검색창 */
 .filterContainer {
   display: flex;
