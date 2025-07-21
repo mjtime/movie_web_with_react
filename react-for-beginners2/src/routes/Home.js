@@ -9,13 +9,18 @@ import GenreMenu from "components/GenreMenu/GenreMenu";
 import SearchBar from "components/SearchBar/SearchBar";
 import CategorySlider from "components/CategorySlider/CategorySlider";
 import genreConfigs from "contents/genreConfigs";
+import useDebounce from "hooks/uesDebounce";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [moviesByGenre, setMoviesByGenre] = useState({}); // 장르별 영화 정보
   const [filteredMovies, setFilteredMovies] = useState([]); // 검색된 영화 정보
   const [isFiltering, setIsFiltering] = useState(false); // 필터링 상태
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams(); // 현재 URL의 쿼리 파라미터(query string)
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("query_term") || ""
+  ); // 검색어 상태
+  const debouncedSearchTerm = useDebounce(searchTerm, 300); // 디바운스된 검색어
   const searchInputRef = useRef(null); // 검색창 연결
   const [slideMovies, setSlideMovies] = useState([]); // 슬라이드쇼 영화 정보
   const [selectedGenre, setSelectedGenre] = useState("All"); // 선택된 장르 상태 추가
@@ -67,7 +72,7 @@ function Home() {
         url.searchParams.set("genre", genre);
       }
       const query = searchParams.get("query_term");
-      if (query && query.length > 1) {
+      if (query) {
         url.searchParams.set("query_term", query);
       }
 
@@ -108,30 +113,24 @@ function Home() {
   };
 
   // 검색
-  const handleSearch = (query) => {
+  useEffect(() => {
+    const trimmed = debouncedSearchTerm?.trim();
     setSearchParams((prevParams) => {
       const newParams = new URLSearchParams(prevParams);
-      if (query) {
-        newParams.set("query_term", query);
+      if (trimmed) {
+        newParams.set("query_term", trimmed);
       } else {
         newParams.delete("query_term");
       }
       return newParams;
     });
-  };
-
-  // 검색창 clear 버튼
-  const clearSearch = () => {
-    setSearchParams((prevParams) => {
-      const newParams = new URLSearchParams(prevParams);
-      newParams.delete("query_term");
-      return newParams;
-    });
-    if (searchInputRef.current) {
-      searchInputRef.current.value = "";
+    if (!trimmed) {
+      setFilteredMovies([]);
     }
-  };
+  }, [debouncedSearchTerm]);
 
+  // URL의 genre 파라미터가 변경될 때 selectedGenre 상태를 동기화
+  // ex) 뒤로가기 버튼
   useEffect(() => {
     const genre = searchParams.get("genre") || "All";
     setSelectedGenre(genre);
@@ -151,9 +150,12 @@ function Home() {
             />
             {/* 제목 검색창 */}
             <SearchBar
-              searchTerm={searchParams.get("query_term") || ""}
-              onSearch={handleSearch}
-              onClear={clearSearch}
+              searchTerm={searchTerm}
+              onSearch={setSearchTerm}
+              onClear={() => {
+                setSearchTerm("");
+                searchInputRef.current && (searchInputRef.current.value = "");
+              }}
               ref={searchInputRef}
             />
           </div>
