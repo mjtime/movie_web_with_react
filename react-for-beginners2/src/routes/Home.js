@@ -89,6 +89,7 @@ function Home() {
       getFilteredMovies();
     } else {
       setIsFiltering(false);
+      setFilteredMovies([]);
     }
   }, [searchParams]);
 
@@ -124,9 +125,6 @@ function Home() {
       }
       return newParams;
     });
-    if (!trimmed) {
-      setFilteredMovies([]);
-    }
   }, [debouncedSearchTerm]);
 
   // URL의 genre 파라미터가 변경될 때 selectedGenre 상태를 동기화
