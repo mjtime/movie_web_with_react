@@ -14,7 +14,7 @@ import useDebounce from "hooks/uesDebounce";
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [moviesByGenre, setMoviesByGenre] = useState({}); // 장르별 영화 정보
-  const [filteredMovies, setFilteredMovies] = useState([]); // 검색된 영화 정보
+  const [filteredMovies, setFilteredMovies] = useState(null); // 검색된 영화 정보
   const [isFiltering, setIsFiltering] = useState(false); // 필터링 상태
   const [searchParams, setSearchParams] = useSearchParams(); // 현재 URL의 쿼리 파라미터(query string)
   const [searchTerm, setSearchTerm] = useState(
@@ -89,7 +89,7 @@ function Home() {
       getFilteredMovies();
     } else {
       setIsFiltering(false);
-      setFilteredMovies([]);
+      setFilteredMovies(null);
     }
   }, [searchParams]);
 
@@ -163,7 +163,8 @@ function Home() {
           {/* 영화 목록 */}
           {isFiltering ? (
             <div className={styles.gridContainer}>
-              {filteredMovies.length > 0 ? (
+              {filteredMovies === null ? // 검색 중에는 아무것도 표시하지 않음
+              null : filteredMovies.length > 0 ? (
                 filteredMovies.map((movie) => (
                   <Movie
                     key={movie.id}
