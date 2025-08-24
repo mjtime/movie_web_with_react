@@ -10,6 +10,7 @@ import SearchBar from "components/SearchBar/SearchBar";
 import CategorySlider from "components/CategorySlider/CategorySlider";
 import genreConfigs from "contents/genreConfigs";
 import useDebounce from "hooks/uesDebounce";
+import useInfiniteScroll from "hooks/useInfiniteScroll";
 
 function Home() {
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -34,25 +35,14 @@ function Home() {
   const [loadingMore, setLoadingMore] = useState(false); // 중복 fetch 방지용
   const windowSize = useWindowSize(); // 커스텀 훅을 통해 창 크기 정보 가져오기
   const scrollRef = useRef(null); // 스크롤 감지용
-  const observer = useRef(null);
-  const loaderRef = useCallback(
-    (node) => {
-      // 이전 observer가 있으면 해제
-      if (observer.current) observer.current.disconnect(); // 타켓 요소 관찰 중지
-      // node가 마운트됐고, 필터링 중이며, 더 불러올 게 있으면
-      if (node && isFiltering && hasMore) {
-        observer.current = new IntersectionObserver(
-          (entries) => {
-            // 교차하면 page 상태를 증가시켜 다음 페이지 요청
-            if (entries[0].isIntersecting) setPage((prev) => prev + 1);
-          },
-          { root: scrollRef.current, threshold: 0.1 }
-        );
-        observer.current.observe(node); // 타켓 요소 관찰 시작
-      }
-    },
-    [isFiltering, hasMore]
-  );
+  const abortRef = useRef(null);
+
+  const loaderRef = useInfiniteScroll({
+    isActive: isFiltering && !loadingMore,
+    hasMore,
+    onLoadMore: () => setPage((prev) => prev + 1),
+    root: scrollRef,
+  });
 
   // 영화 데이터 요청 (장르별 메인화면 표시용)
   const getMovieByGenres = async () => {
@@ -90,9 +80,31 @@ function Home() {
     }
   };
 
+  // 컴포넌트 언마운트 시 진행중 요청 취소
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+      abortRef.current = null;
+    };
+  }, []);
+
   // 검색 및 장르 필터링 영화 요청
   const getFilteredMovies = async (pageNum = 1) => {
-    if (loadingMore) return; // 중복 요청 방지
+    if (loadingMore && pageNum !== 1) return; // 중복 요청 방지
+
+    // 이전 요청이 아직 진행 중이면 취소
+    if (abortRef.current) {
+      try {
+        abortRef.current.abort(); // 이전 fetch 요청 취소
+      } catch (e) {
+        /* ignore */
+      }
+      abortRef.current = null; // 이전 컨트롤러 초기화
+    }
+
+    // 새로운 AbortController 생성 -> 이번 fetch 요청을 제어할 컨트롤러
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       setLoadingMore(true);
       const url = new URL("https://yts.mx/api/v2/list_movies.json?");
@@ -104,10 +116,12 @@ function Home() {
       url.searchParams.set("page", pageNum);
       url.searchParams.set("limit", 20);
 
-      const response = await fetch(url.toString());
+      // fetch 요청 시 controller.signal 전달
+      const response = await fetch(url.toString(), {
+        signal: controller.signal,
+      });
       const json = await response.json();
-      const newMovies = json.data.movies ? json.data.movies : [];
-
+      const newMovies = json.data?.movies ?? [];
       // 1페에지만 데이터 초기화, 그 외엔 누적
       setFilteredMovies((prevMovies) =>
         pageNum === 1 ? newMovies : [...(prevMovies || []), ...newMovies]
@@ -115,11 +129,15 @@ function Home() {
       // 다음 페이지 더 올 수 있는지 체크
       setHasMore(newMovies.length === 20);
     } catch (error) {
-      if (process.env.NODE_ENV === "development") {
+      if (
+        error.name !== "AbortError" &&
+        process.env.NODE_ENV === "development"
+      ) {
         console.error("영화 데이터를 불러오는 중 오류 발생:", error);
       }
     } finally {
       setLoadingMore(false); // 로딩 상태 해제
+      if (abortRef.current === controller) abortRef.current = null;
     }
   };
 
@@ -143,13 +161,6 @@ function Home() {
   useEffect(() => {
     getMovieByGenres();
     getSlideMovies();
-  }, []);
-
-  // 옵저버 정리
-  useEffect(() => {
-    return () => {
-      if (observer.current) observer.current.disconnect();
-    };
   }, []);
 
   // 장르 선택
