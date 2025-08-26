@@ -201,6 +201,7 @@ function Home() {
   useEffect(() => {
     const genre = searchParams.get("genre") || "All";
     setSelectedGenre(genre);
+    setSearchTerm(searchParams.get("query_term") || "");
   }, [searchParams]);
 
   return (
