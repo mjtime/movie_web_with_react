@@ -42,3 +42,17 @@
   flex-direction: column;
   gap: 36px; /* 원하는 여백(px, rem 등) */
 }
+
+.loader {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+
+  /* 가운데 정렬용 스타일 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%;
+  grid-column: 1 / -1;
+}
